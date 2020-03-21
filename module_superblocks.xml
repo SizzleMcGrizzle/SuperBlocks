@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_superblocks" default="compile.module.superblocks">
+  <dirname property="module.superblocks.basedir" file="${ant.file.module_superblocks}"/>
+  
+  <property name="module.jdk.home.superblocks" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.superblocks" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.superblocks" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.superblocks" value="-encoding UTF-8 -source 8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="superblocks.output.dir" value="${module.superblocks.basedir}/target/classes"/>
+  <property name="superblocks.testoutput.dir" value="${module.superblocks.basedir}/target/test-classes"/>
+  
+  <path id="superblocks.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="superblocks.module.production.classpath">
+    <path refid="${module.jdk.classpath.superblocks}"/>
+    <path refid="library.maven:_org.spigotmc:spigot-api:1.14.4-r0.1-snapshot.classpath"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.6.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:21.0.classpath"/>
+    <path refid="library.maven:_com.google.code.gson:gson:2.8.0.classpath"/>
+    <path refid="library.maven:_net.md-5:bungeecord-chat:1.13-snapshot.classpath"/>
+    <path refid="library.maven:_org.yaml:snakeyaml:1.23.classpath"/>
+    <path refid="library.maven:_com.github.kangarko:foundation:5.1.4.classpath"/>
+    <path refid="library.maven:_org.projectlombok:lombok:1.18.8.classpath"/>
+    <path refid="library.maven:_org.mineacademy.server:paperspigot:1.14.4-snapshot-146.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:citizensapi:2.0.25-b612.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:authme:5.6.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:cmi:8.5.4.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:discordsrv:1.18.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:essentialsx:2.16.1.80.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:factions:3.2.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:factionsuuid:1.6.9.5-u0.3.0-b133.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:jobs:4.10.3.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:lockettepro:2.9.3.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:lwc:2.1.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:massivecore:3.2.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mcmmo:1.4.06.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mobarena:0.103.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:multiverse-core:3.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mvdwplaceholderapi:2.5.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mythicmobs:4.5.6.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:nuvotifier:2.5.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:placeholderapi:2.10.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:plotsquared:4.222.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:protocollib:4.5.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:residence:4.8.4.4.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:towny:0.93.0.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:townychat:0.53.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:vault:1.7.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:worldedit:7.0.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:worldguard:7.0.1.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit:worldedit-bukkit:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit:worldedit-core:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit.worldedit-libs:core:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_de.schlichtherle:truezip:6.8.3.classpath"/>
+    <path refid="library.maven:_rhino:js:1.7r2.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_com.googlecode.json-simple:json-simple:1.1.1.classpath"/>
+    <path refid="library.maven:_junit:junit:4.10.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.1.classpath"/>
+    <path refid="library.maven:_org.slf4j:slf4j-api:1.7.26.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit.worldedit-libs:bukkit:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.bukkit:bukkit:1.13.2-r0.1-snapshot.classpath"/>
+    <path refid="library.maven:_com.github.techfortress:griefprevention:16.12.0.classpath"/>
+    <pathelement location="${basedir}/depend/CLClans.jar"/>
+    <path refid="library.maven:_com.github.sydmontague:clcore:craftcitizen-6193dfce54-1.classpath"/>
+  </path>
+  
+  <path id="superblocks.runtime.production.module.classpath">
+    <pathelement location="${superblocks.output.dir}"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.6.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:21.0.classpath"/>
+    <path refid="library.maven:_com.google.code.gson:gson:2.8.0.classpath"/>
+    <path refid="library.maven:_org.yaml:snakeyaml:1.23.classpath"/>
+    <path refid="library.maven:_com.github.kangarko:foundation:5.1.4.classpath"/>
+    <path refid="library.maven:_org.projectlombok:lombok:1.18.8.classpath"/>
+    <path refid="library.maven:_org.mineacademy.server:paperspigot:1.14.4-snapshot-146.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:citizensapi:2.0.25-b612.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:authme:5.6.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:cmi:8.5.4.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:discordsrv:1.18.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:essentialsx:2.16.1.80.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:factions:3.2.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:factionsuuid:1.6.9.5-u0.3.0-b133.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:jobs:4.10.3.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:lockettepro:2.9.3.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:lwc:2.1.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:massivecore:3.2.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mcmmo:1.4.06.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mobarena:0.103.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:multiverse-core:3.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mvdwplaceholderapi:2.5.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mythicmobs:4.5.6.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:nuvotifier:2.5.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:placeholderapi:2.10.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:plotsquared:4.222.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:protocollib:4.5.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:residence:4.8.4.4.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:towny:0.93.0.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:townychat:0.53.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:vault:1.7.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:worldedit:7.0.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:worldguard:7.0.1.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit:worldedit-bukkit:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit:worldedit-core:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit.worldedit-libs:core:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_de.schlichtherle:truezip:6.8.3.classpath"/>
+    <path refid="library.maven:_rhino:js:1.7r2.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_com.googlecode.json-simple:json-simple:1.1.1.classpath"/>
+    <path refid="library.maven:_junit:junit:4.10.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.1.classpath"/>
+    <path refid="library.maven:_org.slf4j:slf4j-api:1.7.26.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit.worldedit-libs:bukkit:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.bukkit:bukkit:1.13.2-r0.1-snapshot.classpath"/>
+    <path refid="library.maven:_io.papermc:paperlib:1.0.2.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-slf4j-impl:2.8.1.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-api:2.8.1.classpath"/>
+    <path refid="library.maven:_org.bstats:bstats-bukkit:1.4.classpath"/>
+    <path refid="library.maven:_com.github.techfortress:griefprevention:16.12.0.classpath"/>
+    <pathelement location="${basedir}/depend/CLClans.jar"/>
+    <path refid="library.maven:_com.github.sydmontague:clcore:craftcitizen-6193dfce54-1.classpath"/>
+  </path>
+  
+  <path id="superblocks.module.classpath">
+    <path refid="${module.jdk.classpath.superblocks}"/>
+    <pathelement location="${superblocks.output.dir}"/>
+    <path refid="library.maven:_org.spigotmc:spigot-api:1.14.4-r0.1-snapshot.classpath"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.6.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:21.0.classpath"/>
+    <path refid="library.maven:_com.google.code.gson:gson:2.8.0.classpath"/>
+    <path refid="library.maven:_net.md-5:bungeecord-chat:1.13-snapshot.classpath"/>
+    <path refid="library.maven:_org.yaml:snakeyaml:1.23.classpath"/>
+    <path refid="library.maven:_com.github.kangarko:foundation:5.1.4.classpath"/>
+    <path refid="library.maven:_org.projectlombok:lombok:1.18.8.classpath"/>
+    <path refid="library.maven:_org.mineacademy.server:paperspigot:1.14.4-snapshot-146.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:citizensapi:2.0.25-b612.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:authme:5.6.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:cmi:8.5.4.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:discordsrv:1.18.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:essentialsx:2.16.1.80.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:factions:3.2.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:factionsuuid:1.6.9.5-u0.3.0-b133.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:jobs:4.10.3.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:lockettepro:2.9.3.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:lwc:2.1.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:massivecore:3.2.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mcmmo:1.4.06.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mobarena:0.103.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:multiverse-core:3.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mvdwplaceholderapi:2.5.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mythicmobs:4.5.6.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:nuvotifier:2.5.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:placeholderapi:2.10.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:plotsquared:4.222.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:protocollib:4.5.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:residence:4.8.4.4.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:towny:0.93.0.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:townychat:0.53.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:vault:1.7.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:worldedit:7.0.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:worldguard:7.0.1.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit:worldedit-bukkit:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit:worldedit-core:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit.worldedit-libs:core:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_de.schlichtherle:truezip:6.8.3.classpath"/>
+    <path refid="library.maven:_rhino:js:1.7r2.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_com.googlecode.json-simple:json-simple:1.1.1.classpath"/>
+    <path refid="library.maven:_junit:junit:4.10.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.1.classpath"/>
+    <path refid="library.maven:_org.slf4j:slf4j-api:1.7.26.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit.worldedit-libs:bukkit:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.bukkit:bukkit:1.13.2-r0.1-snapshot.classpath"/>
+    <path refid="library.maven:_io.papermc:paperlib:1.0.2.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-slf4j-impl:2.8.1.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-api:2.8.1.classpath"/>
+    <path refid="library.maven:_org.bstats:bstats-bukkit:1.4.classpath"/>
+    <path refid="library.maven:_com.github.techfortress:griefprevention:16.12.0.classpath"/>
+    <pathelement location="${basedir}/depend/CLClans.jar"/>
+    <path refid="library.maven:_com.github.sydmontague:clcore:craftcitizen-6193dfce54-1.classpath"/>
+  </path>
+  
+  <path id="superblocks.runtime.module.classpath">
+    <pathelement location="${superblocks.testoutput.dir}"/>
+    <pathelement location="${superblocks.output.dir}"/>
+    <path refid="library.maven:_org.spigotmc:spigot-api:1.14.4-r0.1-snapshot.classpath"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.6.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:21.0.classpath"/>
+    <path refid="library.maven:_com.google.code.gson:gson:2.8.0.classpath"/>
+    <path refid="library.maven:_net.md-5:bungeecord-chat:1.13-snapshot.classpath"/>
+    <path refid="library.maven:_org.yaml:snakeyaml:1.23.classpath"/>
+    <path refid="library.maven:_com.github.kangarko:foundation:5.1.4.classpath"/>
+    <path refid="library.maven:_org.projectlombok:lombok:1.18.8.classpath"/>
+    <path refid="library.maven:_org.mineacademy.server:paperspigot:1.14.4-snapshot-146.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:citizensapi:2.0.25-b612.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:authme:5.6.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:cmi:8.5.4.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:discordsrv:1.18.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:essentialsx:2.16.1.80.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:factions:3.2.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:factionsuuid:1.6.9.5-u0.3.0-b133.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:jobs:4.10.3.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:lockettepro:2.9.3.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:lwc:2.1.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:massivecore:3.2.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mcmmo:1.4.06.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mobarena:0.103.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:multiverse-core:3.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mvdwplaceholderapi:2.5.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:mythicmobs:4.5.6.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:nuvotifier:2.5.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:placeholderapi:2.10.2.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:plotsquared:4.222.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:protocollib:4.5.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:residence:4.8.4.4.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:towny:0.93.0.0.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:townychat:0.53.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:vault:1.7.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:worldedit:7.0.1.classpath"/>
+    <path refid="library.maven:_org.mineacademy.plugin:worldguard:7.0.1.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit:worldedit-bukkit:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit:worldedit-core:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit.worldedit-libs:core:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_de.schlichtherle:truezip:6.8.3.classpath"/>
+    <path refid="library.maven:_rhino:js:1.7r2.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_com.googlecode.json-simple:json-simple:1.1.1.classpath"/>
+    <path refid="library.maven:_junit:junit:4.10.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.1.classpath"/>
+    <path refid="library.maven:_org.slf4j:slf4j-api:1.7.26.classpath"/>
+    <path refid="library.maven:_com.sk89q.worldedit.worldedit-libs:bukkit:7.0.0-snapshot.classpath"/>
+    <path refid="library.maven:_org.bukkit:bukkit:1.13.2-r0.1-snapshot.classpath"/>
+    <path refid="library.maven:_io.papermc:paperlib:1.0.2.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-slf4j-impl:2.8.1.classpath"/>
+    <path refid="library.maven:_org.apache.logging.log4j:log4j-api:2.8.1.classpath"/>
+    <path refid="library.maven:_org.bstats:bstats-bukkit:1.4.classpath"/>
+    <path refid="library.maven:_com.github.techfortress:griefprevention:16.12.0.classpath"/>
+    <pathelement location="${basedir}/depend/CLClans.jar"/>
+    <path refid="library.maven:_com.github.sydmontague:clcore:craftcitizen-6193dfce54-1.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.superblocks">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.superblocks">
+    <patternset refid="excluded.from.module.superblocks"/>
+  </patternset>
+  
+  <path id="superblocks.module.sourcepath">
+    <dirset dir="${module.superblocks.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="superblocks.module.test.sourcepath">
+    <dirset dir="${module.superblocks.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.superblocks" depends="compile.module.superblocks.production,compile.module.superblocks.tests" description="Compile module superblocks"/>
+  
+  <target name="compile.module.superblocks.production" depends="register.custom.compilers" description="Compile module superblocks; production classes">
+    <mkdir dir="${superblocks.output.dir}"/>
+    <javac2 destdir="${superblocks.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.superblocks}/javac">
+      <compilerarg line="${compiler.args.superblocks}"/>
+      <bootclasspath refid="superblocks.module.bootclasspath"/>
+      <classpath refid="superblocks.module.production.classpath"/>
+      <src refid="superblocks.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.superblocks"/>
+    </javac2>
+    
+    <copy todir="${superblocks.output.dir}">
+      <fileset dir="${module.superblocks.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.superblocks.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.superblocks.tests" depends="register.custom.compilers,compile.module.superblocks.production" description="compile module superblocks; test classes" unless="skip.tests">
+    <mkdir dir="${superblocks.testoutput.dir}"/>
+    <javac2 destdir="${superblocks.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.superblocks}/javac">
+      <compilerarg line="${compiler.args.superblocks}"/>
+      <bootclasspath refid="superblocks.module.bootclasspath"/>
+      <classpath refid="superblocks.module.classpath"/>
+      <src refid="superblocks.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.superblocks"/>
+    </javac2>
+    
+    <copy todir="${superblocks.testoutput.dir}">
+      <fileset dir="${module.superblocks.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.superblocks" description="cleanup module">
+    <delete dir="${superblocks.output.dir}"/>
+    <delete dir="${superblocks.testoutput.dir}"/>
+  </target>
+</project>
