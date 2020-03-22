@@ -34,11 +34,4 @@ public class SuperBlocksPlugin extends SimplePlugin {
 	private void activateBeaconTimer() {
 		new BeaconEffects(160, 160);
 	}
-	/*
-	 * LIVECALL QUESTIONS
-	 * - Is there a way to play a sound upon menu close?
-	 * - Extend Time button works when it's not extended, but does not always work when it is.
-	 * - How to add potion effects without flicker
-	 *
-	 */
 }
