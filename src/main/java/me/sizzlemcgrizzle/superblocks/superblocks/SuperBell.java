@@ -7,12 +7,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.mineacademy.fo.Common;
 import org.mineacademy.fo.remain.CompMaterial;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -94,5 +98,56 @@ public class SuperBell extends SuperBlock {
 		};
 		Common.runLater(60, runnable);
 
+	}
+
+	public void serializeSettings(Location bell, Location placedOn) throws IOException, InvalidConfigurationException {
+		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/bells.yml");
+		YamlConfiguration config = new YamlConfiguration();
+
+		if (!file.exists())
+			file.createNewFile();
+
+		config.load(file);
+
+		String serializeBell = (int) bell.getX() + "&-&" + (int) bell.getY() + "&-&" + (int) bell.getZ() + "&-&" + bell.getWorld().getName();
+		String serializePlacedOn = (int) placedOn.getX() + "&-&" + (int) placedOn.getY() + "&-&" + (int) placedOn.getZ() + "&-&" + placedOn.getWorld().getName();
+
+		config.createSection(serializeBell);
+		config.getConfigurationSection(serializeBell).set("placedOn", serializePlacedOn);
+		config.save(file);
+	}
+
+	public void removeSetting(Location bell) throws IOException, InvalidConfigurationException {
+		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/bells.yml");
+		YamlConfiguration config = new YamlConfiguration();
+
+		if (!file.exists())
+			file.createNewFile();
+
+		config.load(file);
+
+		String serializedLocation = (int) bell.getX() + "&-&" + (int) bell.getY() + "&-&" + (int) bell.getZ() + "&-&" + bell.getWorld().getName();
+
+		config.set(serializedLocation, null);
+		config.save(file);
+	}
+
+	public boolean isBellOnLocation(Location placedOn) throws IOException, InvalidConfigurationException {
+		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/bells.yml");
+		YamlConfiguration config = new YamlConfiguration();
+
+		if (!file.exists()) {
+			return false;
+		}
+
+		String serializedLocation = (int) placedOn.getX() + "&-&" + (int) placedOn.getY() + "&-&" + (int) placedOn.getZ() + "&-&" + placedOn.getWorld().getName();
+
+		config.load(file);
+
+		for (String key : config.getKeys(false)) {
+			if (config.getConfigurationSection(key).getString("placedOn").equals(serializedLocation))
+				return true;
+		}
+		return false;
 	}
 }

@@ -17,8 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
 public class SuperBlockListener implements Listener {
 	private SuperBell superBell = new SuperBell();
@@ -29,8 +28,11 @@ public class SuperBlockListener implements Listener {
 		ItemStack item = event.getItemInHand();
 		Location location = event.getBlockPlaced().getLocation();
 
-		if (superBell.isSuperBlock(item) && item.getType().equals(CompMaterial.BELL.getMaterial()))
+		if (superBell.isSuperBlock(item) && item.getType().equals(CompMaterial.BELL.getMaterial())) {
 			superBell.serialize(location, "bell");
+			superBell.serializeSettings(location, event.getBlockAgainst().getLocation());
+		}
+
 		if (superBeacon.isSuperBlock(item) && item.getType().equals(CompMaterial.BEACON.getMaterial())) {
 			superBeacon.serialize(location, "beacon");
 			superBeacon.serializeSettings(location, event.getPlayer());
@@ -43,12 +45,18 @@ public class SuperBlockListener implements Listener {
 		Player player = event.getPlayer();
 		Location location = event.getBlock().getLocation();
 
+		if (superBell.isBellOnLocation(location)) {
+			event.setCancelled(true);
+			return;
+		}
+
 		if (SuperBlock.isLocationSuperBlock(location)) {
 			event.setDropItems(false);
 			if (CompMaterial.fromMaterial(material).is(CompMaterial.BELL.getMaterial())) {
 				if (!player.getGameMode().equals(GameMode.CREATIVE))
 					location.getWorld().dropItemNaturally(location, superBell.getItem());
 				superBell.removeFromFile(location);
+				superBell.removeSetting(location);
 			}
 			if (CompMaterial.fromMaterial(material).is(CompMaterial.BEACON.getMaterial())) {
 				if (!player.getGameMode().equals(GameMode.CREATIVE))
@@ -87,19 +95,28 @@ public class SuperBlockListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onExplosion(EntityExplodeEvent event) throws IOException, InvalidConfigurationException {
-		List<Integer> removeList = new ArrayList<>();
-		for (int i = 0; i < event.blockList().size(); i++) {
-			if (SuperBlock.isLocationSuperBlock(event.blockList().get(i).getLocation()))
-				removeList.add(i);
+		Iterator<Block> iter = event.blockList().iterator();
+		while (iter.hasNext()) {
+			Block block = iter.next();
+			if (superBell.isBellOnLocation(block.getLocation()) || SuperBlock.isLocationSuperBlock(block.getLocation()))
+				iter.remove();
 		}
+
+
+		/*List<Integer> removeList = new ArrayList<>();
+		for (int i = 0; i < event.blockList().size(); i++)
+			if (SuperBlock.isLocationSuperBlock(event.blockList().get(i).getLocation()) || superBell.isBellOnLocation(event.blockList().get(i).getLocation()))
+				removeList.add(i);
+		Common.log(removeList.toString());
+		Common.log(String.valueOf(event.blockList().size()));
 		for (Integer integer : removeList)
-			event.blockList().remove(integer.intValue());
+			event.blockList().remove(integer.intValue());*/
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onPistonExtend(BlockPistonExtendEvent event) throws IOException, InvalidConfigurationException {
 		for (Block block : event.getBlocks())
-			if (SuperBlock.isLocationSuperBlock(block.getLocation()))
+			if (SuperBlock.isLocationSuperBlock(block.getLocation()) || superBell.isBellOnLocation(block.getLocation()))
 				event.setCancelled(true);
 
 	}
@@ -107,7 +124,7 @@ public class SuperBlockListener implements Listener {
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onPistonRetract(BlockPistonRetractEvent event) throws IOException, InvalidConfigurationException {
 		for (Block block : event.getBlocks())
-			if (SuperBlock.isLocationSuperBlock(block.getLocation()))
+			if (SuperBlock.isLocationSuperBlock(block.getLocation()) || superBell.isBellOnLocation(block.getLocation()))
 				event.setCancelled(true);
 
 	}

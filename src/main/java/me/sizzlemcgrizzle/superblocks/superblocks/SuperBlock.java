@@ -24,7 +24,7 @@ public abstract class SuperBlock {
 
 
 	public void serialize(Location location, String type) throws IOException, InvalidConfigurationException {
-		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/superblocks.yml");
+		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/superblocks.yml");
 		YamlConfiguration config = new YamlConfiguration();
 
 		if (!file.exists())
@@ -41,7 +41,7 @@ public abstract class SuperBlock {
 
 
 	public void removeFromFile(Location location) throws IOException, InvalidConfigurationException {
-		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/superblocks.yml");
+		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/superblocks.yml");
 		YamlConfiguration config = new YamlConfiguration();
 
 		if (!file.exists())
@@ -58,7 +58,7 @@ public abstract class SuperBlock {
 
 
 	public static boolean isLocationSuperBlock(Location location) throws IOException, InvalidConfigurationException {
-		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/superblocks.yml");
+		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/superblocks.yml");
 		YamlConfiguration config = new YamlConfiguration();
 
 		if (!file.exists())

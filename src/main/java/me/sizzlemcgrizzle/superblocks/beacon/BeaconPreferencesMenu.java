@@ -65,7 +65,7 @@ public class BeaconPreferencesMenu extends Menu {
 	private String time;
 
 	public BeaconPreferencesMenu(Location location) throws IOException, InvalidConfigurationException {
-		this.file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/beaconsettings.yml");
+		this.file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/beacons.yml");
 		this.config = new YamlConfiguration();
 
 		String serializedLocation = (int) location.getX() + "&-&" + (int) location.getY() + "&-&" + (int) location.getZ() + "&-&" + location.getWorld().getName();

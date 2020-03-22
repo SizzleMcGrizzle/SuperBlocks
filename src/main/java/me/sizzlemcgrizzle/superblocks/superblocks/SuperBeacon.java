@@ -56,7 +56,7 @@ public class SuperBeacon extends SuperBlock {
 	}
 
 	public void serializeSettings(Location location, Player player) throws IOException, InvalidConfigurationException {
-		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/beaconsettings.yml");
+		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/beacons.yml");
 		YamlConfiguration config = new YamlConfiguration();
 
 		if (!file.exists())
@@ -76,7 +76,7 @@ public class SuperBeacon extends SuperBlock {
 	}
 
 	public void removeSetting(Location location) throws IOException, InvalidConfigurationException {
-		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/beaconsettings.yml");
+		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/beacons.yml");
 		YamlConfiguration config = new YamlConfiguration();
 
 		if (!file.exists())

@@ -37,10 +37,10 @@ public class BeaconEffects {
 	private void runTimer() {
 		Runnable runnable = () -> {
 			try {
-				this.file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/beaconsettings.yml");
+				this.file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/beacons.yml");
 				this.config = new YamlConfiguration();
 				if (!file.exists())
-					file.createNewFile();
+					return;
 				config.load(file);
 			} catch (IOException | InvalidConfigurationException e) {
 				e.printStackTrace();
