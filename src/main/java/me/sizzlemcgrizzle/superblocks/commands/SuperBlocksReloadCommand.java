@@ -16,7 +16,7 @@ public class SuperBlocksReloadCommand extends SimpleSubCommand {
 	protected void onCommand() {
 		try {
 			SimplePlugin.getInstance().reload();
-			tell(Settings.PREFIX + "&aPlugin has been successfully reloaded.");
+			tell(Settings.PREFIX + "&7SuperBlocks configuration has been successfully reloaded.");
 		} catch (Throwable t) {
 			t.printStackTrace();
 

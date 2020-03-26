@@ -72,47 +72,47 @@ public class BeaconEffects {
 			switch (string) {
 				case "regen":
 					if (!isClanMember(uuid, playerUUID)) break;
-					player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, repeat, 0));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, repeat + 20, 0));
 					break;
 				case "strength":
 					if (!isClanMember(uuid, playerUUID)) break;
-					player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, repeat, 1));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, repeat + 20, 1));
 					break;
 				case "speed":
 					if (!isClanMember(uuid, playerUUID)) break;
-					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, repeat, 1));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, repeat + 20, 1));
 					break;
 				case "haste":
 					if (!isClanMember(uuid, playerUUID)) break;
-					player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, repeat, 1));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, repeat + 20, 1));
 					break;
 				case "resistance":
 					if (!isClanMember(uuid, playerUUID)) break;
-					player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, repeat, 1));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, repeat + 20, 1));
 					break;
 				case "jumpboost":
 					if (!isClanMember(uuid, playerUUID)) break;
-					player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, repeat, 1));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, repeat + 20, 1));
 					break;
 				case "fireres":
 					if (!isClanMember(uuid, playerUUID)) break;
-					player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, repeat, 0));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, repeat + 20, 0));
 					break;
 				case "waterbreath":
 					if (!isClanMember(uuid, playerUUID)) break;
-					player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, repeat, 0));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, repeat + 20, 0));
 					break;
 				case "minefatigue":
 					if (!isEnemy(uuid, playerUUID)) break;
-					player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, repeat, 0));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, repeat + 20, 0));
 					break;
 				case "slowness":
 					if (!isEnemy(uuid, playerUUID)) break;
-					player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, repeat, 0));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, repeat + 20, 0));
 					break;
 				case "weakness":
 					if (!isEnemy(uuid, playerUUID)) break;
-					player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, repeat, 0));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, repeat + 20, 0));
 					break;
 			}
 
