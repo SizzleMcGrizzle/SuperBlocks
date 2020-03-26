@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class SuperBell extends SuperBlock {
-	private SuperBlocksPlugin blueprintsPlugin = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("Blueprints");
 	private CLClans clans = (CLClans) Bukkit.getPluginManager().getPlugin("CLClans");
 
 
