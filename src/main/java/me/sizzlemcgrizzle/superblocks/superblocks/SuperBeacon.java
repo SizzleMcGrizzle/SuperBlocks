@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class SuperBeacon extends SuperBlock {
+	private SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
 	private String name = ChatColor.AQUA + "" + ChatColor.ITALIC + "Amplified Beacon";
 	private List<String> lore = Arrays.asList(ChatColor.GRAY + "Place this beacon down", ChatColor.GRAY + "and right click to", ChatColor.GRAY + "edit properties");
 
@@ -73,6 +74,7 @@ public class SuperBeacon extends SuperBlock {
 		config.getConfigurationSection(serializedLocation).set("expires", 0);
 		config.getConfigurationSection(serializedLocation).set("playerUUID", player.getUniqueId().toString());
 		config.save(file);
+
 	}
 
 	public void removeSetting(Location location) throws IOException, InvalidConfigurationException {
@@ -90,11 +92,19 @@ public class SuperBeacon extends SuperBlock {
 		config.save(file);
 	}
 
+	/*
+	 *   Is the beacon chunk loaded?
+	 *   Are there any non-transparent blocks above it?
+	 *   Does it have a 3x3 of iron/diamond/emerald/gold blocks under it?
+	 */
 	public boolean isBeaconActive(Location location) {
 		double x = location.getX();
 		double y = location.getY();
 		double z = location.getZ();
 		World world = location.getWorld();
+
+		if (!world.isChunkLoaded(location.getBlockX() >> 4, location.getBlockZ() >> 4))
+			return false;
 
 		if (!isBeaconActivateBlock(new Location(world, x, y - 1, z).getBlock().getType())) return false;
 		if (!isBeaconActivateBlock(new Location(world, x, y - 1, z - 1).getBlock().getType())) return false;
@@ -109,8 +119,10 @@ public class SuperBeacon extends SuperBlock {
 
 		for (int i = (int) y + 1; i <= 255; i++) {
 			Material material = (new Location(world, x, i, z).getBlock().getType());
+			if (material.isAir())
+				continue;
 			if (occludingPassThrough(material).equals("true"))
-				return true;
+				continue;
 			if (occludingPassThrough(material).equals("false"))
 				return false;
 			if (material.isOccluding())
@@ -133,9 +145,9 @@ public class SuperBeacon extends SuperBlock {
 	}
 
 	private String occludingPassThrough(Material material) {
+		if (Settings.PASSTHROUGH_BLOCKS_MATERIAL.contains(material))
+			return "true";
 		switch (material) {
-			case SHULKER_BOX:
-				return "true";
 			case PISTON:
 			case GLOWSTONE:
 			case REDSTONE_LAMP:

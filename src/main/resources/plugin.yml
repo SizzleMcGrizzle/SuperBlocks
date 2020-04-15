@@ -4,5 +4,7 @@ main: me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin
 author: sizzlemcgrizzle
 api-version: 1.13
 description: Modified uses of certain blocks
-permissions:
-commands:
+depend:
+  - CLClans
+  - CLCore
+

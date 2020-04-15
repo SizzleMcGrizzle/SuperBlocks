@@ -84,7 +84,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				try {
 					changeSettings(player, regenString, true);
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -106,7 +106,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				try {
 					changeSettings(player, strengthString, true);
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -128,7 +128,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				try {
 					changeSettings(player, speedString, true);
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -150,7 +150,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				try {
 					changeSettings(player, hasteString, true);
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -172,7 +172,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				try {
 					changeSettings(player, resistanceString, true);
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -194,7 +194,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				try {
 					changeSettings(player, jumpBoostString, true);
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -216,7 +216,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				try {
 					changeSettings(player, waterBreathingString, true);
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -238,7 +238,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				try {
 					changeSettings(player, fireResistanceString, true);
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -260,7 +260,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				try {
 					changeSettings(player, slownessString, false);
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -282,7 +282,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				try {
 					changeSettings(player, weaknessString, false);
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -304,7 +304,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				try {
 					changeSettings(player, miningFatigueString, false);
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -331,6 +331,8 @@ public class BeaconPreferencesMenu extends Menu {
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.NETHER_STAR,
 						"&5&lExtend Duration",
+						"",
+						"&7Click to extend time",
 						"",
 						"&6&nTime remaining:",
 						"",
@@ -442,7 +444,8 @@ public class BeaconPreferencesMenu extends Menu {
 		return (getKey("debuff").equals(effect));
 	}
 
-	private void changeSettings(Player player, String effect, Boolean isBuff) throws IOException {
+	private void changeSettings(Player player, String effect, Boolean isBuff) throws IOException, InvalidConfigurationException {
+		SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
 		UUID uuid = UUID.fromString(configurationSection.getString("playerUUID"));
 		if (!player.getUniqueId().equals(uuid)) {
 			///If the user is not the owner but the owner doesn't have a clan
@@ -453,9 +456,9 @@ public class BeaconPreferencesMenu extends Menu {
 				return;
 			}
 			//If the user is in the owner's clan
-			if (!clans.getClan(Bukkit.getOfflinePlayer(uuid)).hasMember(Bukkit.getOfflinePlayer(player.getUniqueId()))) {
+			if (!clans.getClan(Bukkit.getOfflinePlayer(uuid)).equals(clans.getClan(Bukkit.getOfflinePlayer(player.getUniqueId())))) {
 				player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_DESTROY, 1f, 1F);
-				Common.tell(player, Settings.PREFIX + "&cYou are not in the clan of the owner of this beacon!");
+				Common.tell(player, Settings.PREFIX + "&cYou are not in the same clan as the owner of this beacon!");
 				player.closeInventory();
 				return;
 			}
@@ -503,6 +506,7 @@ public class BeaconPreferencesMenu extends Menu {
 			}
 		}
 		config.save(file);
+		superBlocks.cacheBeacons();
 		restartMenu();
 	}
 
@@ -519,13 +523,16 @@ public class BeaconPreferencesMenu extends Menu {
 		getViewer().closeInventory();
 	}
 
-	private void extendTime() throws IOException {
+	private void extendTime() throws IOException, InvalidConfigurationException {
+		SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
+
 		long time = configurationSection.getLong("expires");
 		if (time == 0)
 			configurationSection.set("expires", System.currentTimeMillis() + 604800000);
 		else
 			configurationSection.set("expires", time + 604800000);
 		config.save(file);
+		superBlocks.cacheBeacons();
 	}
 
 	private String getTime() {
@@ -571,7 +578,7 @@ public class BeaconPreferencesMenu extends Menu {
 				Common.tell(player, Settings.PREFIX + "&aYou have extended the power of this beacon by 1 week.");
 				try {
 					extendTime();
-				} catch (IOException e) {
+				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
 				}
 				restartMenu("&5Added one week of power");

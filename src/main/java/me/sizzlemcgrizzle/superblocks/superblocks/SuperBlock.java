@@ -32,7 +32,7 @@ public abstract class SuperBlock {
 
 		config.load(file);
 
-		String serializedLocation = (int) location.getX() + "&-&" + (int) location.getY() + "&-&" + (int) location.getZ() + "&-&" + location.getWorld();
+		String serializedLocation = (int) location.getX() + "&-&" + (int) location.getY() + "&-&" + (int) location.getZ() + "&-&" + location.getWorld().getName();
 
 		config.set(serializedLocation, type);
 
@@ -49,30 +49,11 @@ public abstract class SuperBlock {
 
 		config.load(file);
 
-		String serializedLocation = (int) location.getX() + "&-&" + (int) location.getY() + "&-&" + (int) location.getZ() + "&-&" + location.getWorld();
+		String serializedLocation = (int) location.getX() + "&-&" + (int) location.getY() + "&-&" + (int) location.getZ() + "&-&" + location.getWorld().getName();
 
 		config.set(serializedLocation, null);
 
 		config.save(file);
-	}
-
-
-	public static boolean isLocationSuperBlock(Location location) throws IOException, InvalidConfigurationException {
-		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/superblocks.yml");
-		YamlConfiguration config = new YamlConfiguration();
-
-		if (!file.exists())
-			return false;
-
-		config.load(file);
-
-		String serializedLocation = (int) location.getX() + "&-&" + (int) location.getY() + "&-&" + (int) location.getZ() + "&-&" + location.getWorld();
-
-		for (String string : config.getKeys(false))
-			if (serializedLocation.equals(string))
-				return true;
-
-		return false;
 	}
 
 

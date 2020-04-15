@@ -6,10 +6,9 @@ public class SuperBlocksCommandGroup extends SimpleCommandGroup {
 	@Override
 	protected void registerSubcommands() {
 		registerSubcommand(new SuperBlocksGetCommand(this));
-		registerSubcommand(new SuperBlocksSetcurrencyCommand(this));
+		registerSubcommand(new SuperBlocksConfigCommand(this));
 		registerSubcommand(new SuperBlocksGetcurrencyCommand(this));
 		registerSubcommand(new SuperBlocksReloadCommand(this));
-		registerSubcommand(new SuperBlocksSetPrefixCommand(this));
 	}
 
 	@Override

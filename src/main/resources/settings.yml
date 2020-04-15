@@ -1,4 +1,7 @@
 Prefix: "&8[&6SuperBlocks&8] "
+Beacon_Passthrough_Blocks:
+  - SHULKER_BOX
+  - BEDROCK
 Currency:
   ==: org.bukkit.inventory.ItemStack
   v: 1976

@@ -130,23 +130,4 @@ public class SuperBell extends SuperBlock {
 		config.set(serializedLocation, null);
 		config.save(file);
 	}
-
-	public boolean isBellOnLocation(Location placedOn) throws IOException, InvalidConfigurationException {
-		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/bells.yml");
-		YamlConfiguration config = new YamlConfiguration();
-
-		if (!file.exists()) {
-			return false;
-		}
-
-		String serializedLocation = (int) placedOn.getX() + "&-&" + (int) placedOn.getY() + "&-&" + (int) placedOn.getZ() + "&-&" + placedOn.getWorld().getName();
-
-		config.load(file);
-
-		for (String key : config.getKeys(false)) {
-			if (config.getConfigurationSection(key).getString("placedOn").equals(serializedLocation))
-				return true;
-		}
-		return false;
-	}
 }
