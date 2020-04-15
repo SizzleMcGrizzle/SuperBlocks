@@ -75,6 +75,8 @@ public class SuperBell extends SuperBlock {
 			int rival = 0;
 
 			for (Player p : Bukkit.getOnlinePlayers()) {
+				if (!p.getLocation().getWorld().equals(location.getWorld()))
+					continue;
 				if (!p.equals(player) && location.distance(p.getLocation()) <= 200.0D) {
 					if (clans.getClan(p) == null || clans.getClan(Bukkit.getOfflinePlayer(player.getUniqueId())) == null) {
 						++neutral;
