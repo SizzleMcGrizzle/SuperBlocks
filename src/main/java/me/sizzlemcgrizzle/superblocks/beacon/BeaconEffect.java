@@ -25,7 +25,7 @@ public class BeaconEffect extends BukkitRunnable {
 					continue;
 				if (System.currentTimeMillis() > beacon.getExpireTime())
 					continue;
-				if (player.getLocation().distance(beacon.getLocation()) >= 50)
+				if (player.getLocation().distance(beacon.getLocation()) >= 50 || !player.getLocation().getWorld().equals(beacon.getLocation().getWorld()))
 					continue;
 
 				if (isClanMember(beacon.getOwner(), player.getUniqueId())) {
