@@ -102,7 +102,6 @@ public class SuperBeacon extends SuperBlock {
 		double y = location.getY();
 		double z = location.getZ();
 		World world = location.getWorld();
-
 		if (!world.isChunkLoaded(location.getBlockX() >> 4, location.getBlockZ() >> 4))
 			return false;
 
@@ -115,7 +114,6 @@ public class SuperBeacon extends SuperBlock {
 		if (!isBeaconActivateBlock(new Location(world, x + 1, y - 1, z).getBlock().getType())) return false;
 		if (!isBeaconActivateBlock(new Location(world, x - 1, y - 1, z).getBlock().getType())) return false;
 		if (!isBeaconActivateBlock(new Location(world, x, y - 1, z + 1).getBlock().getType())) return false;
-
 
 		for (int i = (int) y + 1; i <= 255; i++) {
 			Material material = (new Location(world, x, i, z).getBlock().getType());

@@ -64,6 +64,13 @@
             <artifactId>CLCore</artifactId>
             <version>craftcitizen-6193dfce54-1</version>
         </dependency>
+        <dependency>
+            <groupId>net.countercraft</groupId>
+            <artifactId>Movecraft</artifactId>
+            <version>RELEASE</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/depend/Movecraft.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>
