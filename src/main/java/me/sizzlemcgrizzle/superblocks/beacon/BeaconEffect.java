@@ -20,13 +20,13 @@ public class BeaconEffect extends BukkitRunnable {
 	@Override
 	public void run() {
 		List<BeaconData> beacons = superBlocks.getBeacons().stream()
-				.filter(beacon -> (!superBeacon.isBeaconActive(beacon.getLocation()) || System.currentTimeMillis() > beacon.getExpireTime()))
+				.filter(beacon -> (superBeacon.isBeaconActive(beacon.getLocation()) && System.currentTimeMillis() <= beacon.getExpireTime()))
 				.collect(Collectors.toList());
 		
 		
 		for (BeaconData beacon : beacons)
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (player.getLocation().getWorld() != beacon.getLocation().getWorld() || getHorizontalDistanceSquared(player.getLocation(), beacon.getLocation()) >= 50)
+				if (player.getLocation().getWorld() != beacon.getLocation().getWorld() || getHorizontalDistanceSquared(player.getLocation(), beacon.getLocation()) >= 2500)
 					continue;
 				
 				if (isClanMember(beacon.getOwner(), player.getUniqueId())) {
