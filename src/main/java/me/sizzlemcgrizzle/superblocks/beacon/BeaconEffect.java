@@ -4,30 +4,31 @@ import de.craftlancer.clclans.CLClans;
 import me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin;
 import me.sizzlemcgrizzle.superblocks.superblocks.SuperBeacon;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class BeaconEffect extends BukkitRunnable {
-	SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
-	CLClans clans = (CLClans) Bukkit.getPluginManager().getPlugin("CLClans");
-	SuperBeacon superBeacon = new SuperBeacon();
-
+	private SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
+	private CLClans clans = (CLClans) Bukkit.getPluginManager().getPlugin("CLClans");
+	private SuperBeacon superBeacon = new SuperBeacon();
+	
 	@Override
 	public void run() {
-		List<BeaconData> beacons = superBlocks.getBeacons();
-
-		for (Player player : Bukkit.getOnlinePlayers())
-			for (BeaconData beacon : beacons) {
-				if (!superBeacon.isBeaconActive(beacon.getLocation()))
+		List<BeaconData> beacons = superBlocks.getBeacons().stream()
+				.filter(beacon -> (!superBeacon.isBeaconActive(beacon.getLocation()) || System.currentTimeMillis() > beacon.getExpireTime()))
+				.collect(Collectors.toList());
+		
+		
+		for (BeaconData beacon : beacons)
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				if (player.getLocation().getWorld() != beacon.getLocation().getWorld() || getHorizontalDistanceSquared(player.getLocation(), beacon.getLocation()) >= 50)
 					continue;
-				if (System.currentTimeMillis() > beacon.getExpireTime())
-					continue;
-				if (player.getLocation().distance(beacon.getLocation()) >= 50 || !player.getLocation().getWorld().equals(beacon.getLocation().getWorld()))
-					continue;
-
+				
 				if (isClanMember(beacon.getOwner(), player.getUniqueId())) {
 					if (beacon.getBuff1() != null)
 						player.addPotionEffect(beacon.getBuff1());
@@ -38,10 +39,10 @@ public class BeaconEffect extends BukkitRunnable {
 					if (beacon.getDebuff() != null)
 						player.addPotionEffect(beacon.getDebuff());
 				}
-
+				
 			}
 	}
-
+	
 	private boolean isClanMember(UUID uuid, UUID playerUUID) {
 		if (uuid.equals(playerUUID))
 			return true;
@@ -49,10 +50,14 @@ public class BeaconEffect extends BukkitRunnable {
 			return false;
 		return clans.getClan(Bukkit.getOfflinePlayer(uuid)).equals(clans.getClan(Bukkit.getOfflinePlayer(playerUUID)));
 	}
-
+	
 	private boolean isEnemy(UUID uuid, UUID playerUUID) {
 		if (clans.getClan(Bukkit.getOfflinePlayer(playerUUID)) == null || clans.getClan(Bukkit.getOfflinePlayer(uuid)) == null)
 			return false;
 		return clans.getClan(Bukkit.getOfflinePlayer(playerUUID)).hasRival(clans.getClan(Bukkit.getOfflinePlayer(uuid)));
+	}
+	
+	private double getHorizontalDistanceSquared(Location loc1, Location loc2) {
+		return Math.pow(Math.abs(loc1.getX() - loc2.getX()), 2) + Math.pow(Math.abs(loc1.getZ() - loc2.getZ()), 2);
 	}
 }

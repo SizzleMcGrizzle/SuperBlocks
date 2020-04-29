@@ -24,15 +24,15 @@ import java.util.Objects;
 
 public class SuperBell extends SuperBlock {
 	private CLClans clans = (CLClans) Bukkit.getPluginManager().getPlugin("CLClans");
-
-
+	
+	
 	private String name = ChatColor.GOLD + "" + ChatColor.BOLD + "Player Radar";
 	private List<String> lore = Arrays.asList(ChatColor.GRAY + "Place this radar down", ChatColor.GRAY + "and right click to", ChatColor.GRAY + "scan for players.");
 	private HashMap<Player, Long> cooldownMap = new HashMap<>();
-
+	
 	public SuperBell() {
 	}
-
+	
 	/*
 	 *** Make a new item and apply name and lore to it, then return it.
 	 */
@@ -43,10 +43,10 @@ public class SuperBell extends SuperBlock {
 		meta.setDisplayName(name);
 		meta.setLore(lore);
 		item.setItemMeta(meta);
-
+		
 		return item;
 	}
-
+	
 	/*
 	 *** Validate that this item is a super bell.
 	 */
@@ -54,7 +54,7 @@ public class SuperBell extends SuperBlock {
 	public boolean isSuperBlock(@NonNull ItemStack item) {
 		return (item.getItemMeta().getDisplayName().equals(name) && Objects.equals(item.getItemMeta().getLore(), lore));
 	}
-
+	
 	@Override
 	public void doFunction(Player player, Location location) {
 		if (cooldownMap.containsKey(player)) {
@@ -62,10 +62,10 @@ public class SuperBell extends SuperBlock {
 				Common.tell(player, "&f[&4Craft&fCitizen]&e You must wait &c" + (cooldownMap.get(player) + 60000L - System.currentTimeMillis()) / 1000L + " seconds&e to use this again.");
 				return;
 			}
-
+			
 			this.cooldownMap.remove(player);
 		}
-
+		
 		player.playSound(location, Sound.BLOCK_BELL_RESONATE, 1.0F, 1.0F);
 		Common.tell(player, "&aScanning...");
 		cooldownMap.put(player, System.currentTimeMillis());
@@ -73,7 +73,7 @@ public class SuperBell extends SuperBlock {
 			int clan = 0;
 			int neutral = 0;
 			int rival = 0;
-
+			
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				if (!p.getLocation().getWorld().equals(location.getWorld()))
 					continue;
@@ -89,47 +89,55 @@ public class SuperBell extends SuperBlock {
 					}
 				}
 			}
-
+			
 			if (clan == 0 && neutral == 0 && rival == 0) {
 				Common.tell(player, "&aThere are no players nearby.");
 			} else {
 				Common.tell(player, "&f[&4Craft&fCitizen] &eThere are &2" + clan + " clan members&e, &4" + rival + " rivals&e, and &f" + neutral + " players &enearby.");
 			}
-
+			
 		};
 		Common.runLater(60, runnable);
-
+		
 	}
-
-	public void serializeSettings(Location bell, Location placedOn) throws IOException, InvalidConfigurationException {
+	
+	public void serializeSettings(Location bell, Location placedOn) {
 		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/bells.yml");
 		YamlConfiguration config = new YamlConfiguration();
-
-		if (!file.exists())
-			file.createNewFile();
-
-		config.load(file);
-
-		String serializeBell = (int) bell.getX() + "&-&" + (int) bell.getY() + "&-&" + (int) bell.getZ() + "&-&" + bell.getWorld().getName();
-		String serializePlacedOn = (int) placedOn.getX() + "&-&" + (int) placedOn.getY() + "&-&" + (int) placedOn.getZ() + "&-&" + placedOn.getWorld().getName();
-
-		config.createSection(serializeBell);
-		config.getConfigurationSection(serializeBell).set("placedOn", serializePlacedOn);
-		config.save(file);
+		
+		try {
+			if (!file.exists())
+				file.createNewFile();
+			
+			config.load(file);
+			
+			String serializeBell = (int) bell.getX() + "&-&" + (int) bell.getY() + "&-&" + (int) bell.getZ() + "&-&" + bell.getWorld().getName();
+			String serializePlacedOn = (int) placedOn.getX() + "&-&" + (int) placedOn.getY() + "&-&" + (int) placedOn.getZ() + "&-&" + placedOn.getWorld().getName();
+			
+			config.createSection(serializeBell);
+			config.getConfigurationSection(serializeBell).set("placedOn", serializePlacedOn);
+			config.save(file);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 	}
-
-	public void removeSetting(Location bell) throws IOException, InvalidConfigurationException {
+	
+	public void removeSetting(Location bell) {
 		File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/bells.yml");
 		YamlConfiguration config = new YamlConfiguration();
-
-		if (!file.exists())
-			file.createNewFile();
-
-		config.load(file);
-
-		String serializedLocation = (int) bell.getX() + "&-&" + (int) bell.getY() + "&-&" + (int) bell.getZ() + "&-&" + bell.getWorld().getName();
-
-		config.set(serializedLocation, null);
-		config.save(file);
+		
+		try {
+			if (!file.exists())
+				file.createNewFile();
+			
+			config.load(file);
+			
+			String serializedLocation = (int) bell.getX() + "&-&" + (int) bell.getY() + "&-&" + (int) bell.getZ() + "&-&" + bell.getWorld().getName();
+			
+			config.set(serializedLocation, null);
+			config.save(file);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 	}
 }

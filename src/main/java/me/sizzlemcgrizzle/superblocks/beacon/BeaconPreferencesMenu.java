@@ -36,7 +36,7 @@ public class BeaconPreferencesMenu extends Menu {
 	private final Button jumpBoostButton;
 	private final Button fireResistanceButton;
 	private final Button waterBreathingButton;
-
+	
 	private final String strengthString = "strength";
 	private final String regenString = "regen";
 	private final String speedString = "speed";
@@ -45,7 +45,7 @@ public class BeaconPreferencesMenu extends Menu {
 	private final String jumpBoostString = "jumpboost";
 	private final String fireResistanceString = "fireres";
 	private final String waterBreathingString = "waterbreath";
-
+	
 	//Debuffs
 	private final Button slownessButton;
 	private final Button weaknessButton;
@@ -53,42 +53,42 @@ public class BeaconPreferencesMenu extends Menu {
 	private final String slownessString = "slowness";
 	private final String weaknessString = "weakness";
 	private final String miningFatigueString = "minefatigue";
-
+	
 	//Misc
 	private final Button durationButton;
 	private final Button refreshButton;
-
+	
 	private ConfigurationSection configurationSection;
 	private YamlConfiguration config;
 	private File file;
 	private CLClans clans = (CLClans) Bukkit.getPluginManager().getPlugin("CLClans");
 	private String time;
-
-	public BeaconPreferencesMenu(Location location) throws IOException, InvalidConfigurationException {
+	
+	public BeaconPreferencesMenu(Location location) {
 		this.file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/beacons.yml");
 		this.config = new YamlConfiguration();
-
-		String serializedLocation = (int) location.getX() + "&-&" + (int) location.getY() + "&-&" + (int) location.getZ() + "&-&" + location.getWorld().getName();
-		setTitle("&9Amplified Beacon Control Panel");
-		setSound(new SimpleSound(Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1F, 2F));
-		setSize(9 * 6);
-
-		config.load(file);
-		this.configurationSection = config.getConfigurationSection(serializedLocation);
-
-		time = getTime();
-
-
+		
+		try {
+			String serializedLocation = (int) location.getX() + "&-&" + (int) location.getY() + "&-&" + (int) location.getZ() + "&-&" + location.getWorld().getName();
+			setTitle("&9Amplified Beacon Control Panel");
+			setSound(new SimpleSound(Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1F, 2F));
+			setSize(9 * 6);
+			
+			config.load(file);
+			this.configurationSection = config.getConfigurationSection(serializedLocation);
+			
+			time = getTime();
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+		
 		regenButton = new Button() {
 			@Override
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-				try {
-					changeSettings(player, regenString, true);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				changeSettings(player, regenString, true);
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.POTION,
@@ -104,13 +104,9 @@ public class BeaconPreferencesMenu extends Menu {
 		strengthButton = new Button() {
 			@Override
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-				try {
-					changeSettings(player, strengthString, true);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				changeSettings(player, strengthString, true);
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.BLAZE_POWDER,
@@ -126,13 +122,9 @@ public class BeaconPreferencesMenu extends Menu {
 		speedButton = new Button() {
 			@Override
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-				try {
-					changeSettings(player, speedString, true);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				changeSettings(player, speedString, true);
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.SUGAR,
@@ -148,13 +140,10 @@ public class BeaconPreferencesMenu extends Menu {
 		hasteButton = new Button() {
 			@Override
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-				try {
-					changeSettings(player, hasteString, true);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				changeSettings(player, hasteString, true);
 			}
-
+			
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.GOLDEN_PICKAXE,
@@ -170,13 +159,9 @@ public class BeaconPreferencesMenu extends Menu {
 		resistanceButton = new Button() {
 			@Override
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-				try {
-					changeSettings(player, resistanceString, true);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				changeSettings(player, resistanceString, true);
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.DIAMOND_CHESTPLATE,
@@ -192,13 +177,9 @@ public class BeaconPreferencesMenu extends Menu {
 		jumpBoostButton = new Button() {
 			@Override
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-				try {
-					changeSettings(player, jumpBoostString, true);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				changeSettings(player, jumpBoostString, true);
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.CHAINMAIL_BOOTS,
@@ -214,13 +195,9 @@ public class BeaconPreferencesMenu extends Menu {
 		waterBreathingButton = new Button() {
 			@Override
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-				try {
-					changeSettings(player, waterBreathingString, true);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				changeSettings(player, waterBreathingString, true);
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.WATER_BUCKET,
@@ -236,13 +213,9 @@ public class BeaconPreferencesMenu extends Menu {
 		fireResistanceButton = new Button() {
 			@Override
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-				try {
-					changeSettings(player, fireResistanceString, true);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				changeSettings(player, fireResistanceString, true);
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.LAVA_BUCKET,
@@ -258,13 +231,9 @@ public class BeaconPreferencesMenu extends Menu {
 		slownessButton = new Button() {
 			@Override
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-				try {
-					changeSettings(player, slownessString, false);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				changeSettings(player, slownessString, false);
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.SOUL_SAND,
@@ -280,13 +249,9 @@ public class BeaconPreferencesMenu extends Menu {
 		weaknessButton = new Button() {
 			@Override
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-				try {
-					changeSettings(player, weaknessString, false);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				changeSettings(player, weaknessString, false);
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.FIREWORK_STAR,
@@ -302,13 +267,9 @@ public class BeaconPreferencesMenu extends Menu {
 		miningFatigueButton = new Button() {
 			@Override
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-				try {
-					changeSettings(player, miningFatigueString, false);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				changeSettings(player, miningFatigueString, false);
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.WOODEN_PICKAXE,
@@ -326,7 +287,7 @@ public class BeaconPreferencesMenu extends Menu {
 			public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
 				extendButtonClick(player);
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.NETHER_STAR,
@@ -347,7 +308,7 @@ public class BeaconPreferencesMenu extends Menu {
 				time = getTime();
 				restartMenu("&5Restarting Control Panel...");
 			}
-
+			
 			@Override
 			public ItemStack getItem() {
 				return ItemCreator.of(CompMaterial.PURPLE_STAINED_GLASS_PANE,
@@ -357,11 +318,11 @@ public class BeaconPreferencesMenu extends Menu {
 						"&7Click here to restart",
 						"&7control panel").build().make();
 			}
-
+			
 		};
-
+		
 	}
-
+	
 	@Override
 	public ItemStack getItemAt(int slot) {
 		if (slot == 2)
@@ -429,13 +390,13 @@ public class BeaconPreferencesMenu extends Menu {
 			return ItemCreator.of(CompMaterial.RED_STAINED_GLASS_PANE, "").build().make();*/
 		return ItemCreator.of(CompMaterial.BLACK_STAINED_GLASS_PANE, "").build().make();
 	}
-
+	
 	@Override
 	protected String[] getInfo() {
 		return null;
 	}
-
-
+	
+	
 	private boolean containsEffect(String effect) {
 		if (getKey("buff1").equals(effect))
 			return true;
@@ -443,111 +404,117 @@ public class BeaconPreferencesMenu extends Menu {
 			return true;
 		return (getKey("debuff").equals(effect));
 	}
-
-	private void changeSettings(Player player, String effect, Boolean isBuff) throws IOException, InvalidConfigurationException {
-		SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
-		UUID uuid = UUID.fromString(configurationSection.getString("playerUUID"));
+	
+	private boolean isOwnerOrInOwnerClan(Player player, UUID uuid) {
 		if (!player.getUniqueId().equals(uuid)) {
 			///If the user is not the owner but the owner doesn't have a clan
 			if (clans.getClan(Bukkit.getOfflinePlayer(uuid)) == null) {
 				player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_DESTROY, 1f, 1F);
 				Common.tell(player, Settings.PREFIX + "&cYou are not in the clan of the owner of this beacon!");
 				player.closeInventory();
-				return;
+				return false;
 			}
 			//If the user is in the owner's clan
 			if (!clans.getClan(Bukkit.getOfflinePlayer(uuid)).equals(clans.getClan(Bukkit.getOfflinePlayer(player.getUniqueId())))) {
 				player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_DESTROY, 1f, 1F);
 				Common.tell(player, Settings.PREFIX + "&cYou are not in the same clan as the owner of this beacon!");
 				player.closeInventory();
-				return;
+				return false;
 			}
 		}
-		//If the effect is a buff, then...
-		if (!isBuff) {
-			//It's a debuff. Set buffs to none.
-			setKey("buff1", "none");
-			setKey("buff2", "none");
-			//If the effect == saved effect, set it to none.
-			if (getKey("debuff").equals(effect)) {
-				setKey("debuff", "none");
-			} else {
-				setKey("debuff", effect);
-			}
-		} else {
-			//It's a buff. Set debuffs to none.
-			setKey("debuff", "none");
-			//If both slots are empty then set the effect to the first one.
-			if (getKey("buff1").equals("none") && getKey("buff2").equals("none")) {
-				setKey("buff1", effect);
-				//If the first slot is not empty, then...
-			} else if (!getKey("buff1").equals("none") && getKey("buff2").equals("none")) {
-				//If they are the same, first slot == none
-				if (getKey("buff1").equals(effect)) {
-					setKey("buff1", "none");
-					//If they are different, second slot is filled.
-				} else {
-					setKey("buff2", effect);
-				}
-				//if the second slot is filled,
-			} else if (!getKey("buff2").equals("none") && getKey("buff1").equals("none")) {
-				if (getKey("buff2").equals(effect)) {
-					setKey("buff2", "none");
-				} else {
-					setKey("buff1", effect);
-				}
-			} else {
-				if (getKey("buff1").equals(effect)) {
-					setKey("buff1", "none");
-				} else if (getKey("buff2").equals(effect)) {
-					setKey("buff2", "none");
-				} else
-					Common.tell(getViewer(), Settings.PREFIX + "&cPlease de-select a buff before adding another.");
-			}
-		}
-		config.save(file);
-		superBlocks.cacheBeacons();
-		restartMenu();
+		return true;
 	}
-
+	
+	private void changeSettings(Player player, String effect, Boolean isBuff) {
+		SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
+		UUID uuid = UUID.fromString(configurationSection.getString("playerUUID"));
+		if (!isOwnerOrInOwnerClan(player, uuid))
+			return;
+		try {
+			//If the effect is a buff, then...
+			if (!isBuff) {
+				//It's a debuff. Set buffs to none.
+				setKey("buff1", "none");
+				setKey("buff2", "none");
+				//If the effect == saved effect, set it to none.
+				if (getKey("debuff").equals(effect)) {
+					setKey("debuff", "none");
+				} else {
+					setKey("debuff", effect);
+				}
+			} else {
+				//It's a buff. Set debuffs to none.
+				setKey("debuff", "none");
+				//If both slots are empty then set the effect to the first one.
+				if (getKey("buff1").equals("none") && getKey("buff2").equals("none")) {
+					setKey("buff1", effect);
+					//If the first slot is not empty, then...
+				} else if (!getKey("buff1").equals("none") && getKey("buff2").equals("none")) {
+					//If they are the same, first slot == none
+					if (getKey("buff1").equals(effect)) {
+						setKey("buff1", "none");
+						//If they are different, second slot is filled.
+					} else {
+						setKey("buff2", effect);
+					}
+					//if the second slot is filled,
+				} else if (!getKey("buff2").equals("none") && getKey("buff1").equals("none")) {
+					if (getKey("buff2").equals(effect)) {
+						setKey("buff2", "none");
+					} else {
+						setKey("buff1", effect);
+					}
+				} else {
+					if (getKey("buff1").equals(effect)) {
+						setKey("buff1", "none");
+					} else if (getKey("buff2").equals(effect)) {
+						setKey("buff2", "none");
+					} else
+						Common.tell(getViewer(), Settings.PREFIX + "&cPlease de-select a buff before adding another.");
+				}
+			}
+			config.save(file);
+			superBlocks.cacheBeacons();
+			restartMenu();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private String getKey(String value) {
 		return ((String) configurationSection.get(value));
 	}
-
+	
 	private void setKey(String key, String value) {
 		getViewer().playSound(getViewer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 2F);
 		configurationSection.set(key, value);
 	}
-
-	private void closeInventory() {
-		getViewer().closeInventory();
-	}
-
-	private void extendTime() throws IOException, InvalidConfigurationException {
+	
+	private void extendTime() {
 		SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
-
-		long time = configurationSection.getLong("expires");
-		if (time == 0)
-			configurationSection.set("expires", System.currentTimeMillis() + 604800000);
-		else
-			configurationSection.set("expires", time + 604800000);
-		config.save(file);
-		superBlocks.cacheBeacons();
+		
+		try {
+			long time = configurationSection.getLong("expires");
+			if (time == 0)
+				configurationSection.set("expires", System.currentTimeMillis() + 604800000);
+			else
+				configurationSection.set("expires", time + 604800000);
+			config.save(file);
+			superBlocks.cacheBeacons();
+		} catch (IOException | NullPointerException e) {
+			Common.tell(getViewer(), Settings.PREFIX + "&cThis beacon is broken... Contact an admin for assistance.");
+		}
 	}
-
+	
 	private String getTime() {
 		long expires = configurationSection.getLong("expires");
 		long difference = expires - System.currentTimeMillis();
-
+		
 		if (expires == 0) {
 			return "&cInactive";
 		}
-		int months;
-		int days;
-		int hours;
-		int minutes;
-		int seconds;
-
+		int months, days, hours, minutes, seconds;
+		
 		months = (int) (difference / 2628000000L);
 		difference -= months * 2628000000L;
 		days = (int) (difference / 86400000L);
@@ -557,12 +524,15 @@ public class BeaconPreferencesMenu extends Menu {
 		minutes = (int) (difference / 60000L);
 		difference -= minutes * 60000L;
 		seconds = (int) (difference / 1000);
-
-		//return "&e" + months + "m&7-&e" + days + "d&7-&e" + hours + "h&7-&e" + minutes + "m";
+		
 		return "&e" + months + "m&7-&e" + days + "d&7-&e" + hours + "h&7-&e" + minutes + "m&7-&e" + seconds + "s";
 	}
-
+	
 	private void extendButtonClick(Player player) {
+		UUID uuid = UUID.fromString(configurationSection.getString("playerUUID"));
+		if (!isOwnerOrInOwnerClan(player, uuid))
+			return;
+		
 		Inventory inventory = player.getInventory();
 		ItemStack currency = Settings.CURRENCY;
 		ItemStack clone;
@@ -576,16 +546,12 @@ public class BeaconPreferencesMenu extends Menu {
 				item.setAmount(item.getAmount() - 1);
 				player.updateInventory();
 				Common.tell(player, Settings.PREFIX + "&aYou have extended the power of this beacon by 1 week.");
-				try {
-					extendTime();
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+				extendTime();
 				restartMenu("&5Added one week of power");
 				return;
 			}
 		}
-
+		
 		SimpleComponent
 				.of(Settings.PREFIX)
 				.append("&cYou do not have one ")
@@ -595,6 +561,6 @@ public class BeaconPreferencesMenu extends Menu {
 				.send(getViewer());
 		player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 0.5F);
 	}
-
-
+	
+	
 }
