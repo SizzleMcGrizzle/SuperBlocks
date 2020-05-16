@@ -7,4 +7,6 @@ description: Modified uses of certain blocks
 depend:
   - CLClans
   - CLCore
+softdepend:
+  - Movecraft
 
