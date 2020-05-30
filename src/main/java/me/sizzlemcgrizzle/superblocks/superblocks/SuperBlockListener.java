@@ -29,139 +29,139 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SuperBlockListener implements Listener {
-	private SuperBlocksPlugin superBlocks;
-	
-	private SuperBell superBell;
-	private SuperBeacon superBeacon;
-	
-	public SuperBlockListener(SuperBlocksPlugin plugin) {
-		this.superBlocks = plugin;
-		this.superBell = plugin.getSuperBell();
-		this.superBeacon = plugin.getSuperBeacon();
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	public void onBlockPlace(BlockPlaceEvent event) {
-		ItemStack item = event.getItemInHand();
-		Location location = event.getBlockPlaced().getLocation();
-		
-		if (superBell.isSuperBlock(item) && item.getType().equals(CompMaterial.BELL.getMaterial())) {
-			superBell.serialize(location, "bell");
-			superBell.serializeSettings(location, event.getBlockAgainst().getLocation());
-		}
-		
-		if (superBeacon.isSuperBlock(item) && item.getType().equals(CompMaterial.BEACON.getMaterial())) {
-			superBeacon.serialize(location, "beacon");
-			superBeacon.serializeSettings(location, event.getPlayer());
-		}
-		superBlocks.cacheSuperBlockLocations();
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	public void onBlockBreak(BlockBreakEvent event) {
-		Material material = event.getBlock().getType();
-		Player player = event.getPlayer();
-		Location location = event.getBlock().getLocation();
-		
-		if (superBlocks.getSuperBellOnLocations().contains(location)) {
-			event.setCancelled(true);
-			return;
-		}
-		
-		if (superBlocks.getSuperBlockLocations().contains(location)) {
-			event.setDropItems(false);
-			if (CompMaterial.fromMaterial(material).is(CompMaterial.BELL.getMaterial())) {
-				if (!player.getGameMode().equals(GameMode.CREATIVE))
-					location.getWorld().dropItemNaturally(location, superBell.getItem());
-				superBell.removeFromFile(location);
-				superBell.removeSetting(location);
-			}
-			if (CompMaterial.fromMaterial(material).is(CompMaterial.BEACON.getMaterial())) {
-				if (!player.getGameMode().equals(GameMode.CREATIVE))
-					location.getWorld().dropItemNaturally(location, superBeacon.getItem());
-				superBeacon.removeFromFile(location);
-				superBeacon.removeSetting(location);
-			}
-			superBlocks.cacheSuperBlockLocations();
-		}
-		
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	public void onInteractEvent(PlayerInteractEvent event) {
-		if (event.getClickedBlock() == null || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-			return;
-		Material material = event.getClickedBlock().getType();
-		Player player = event.getPlayer();
-		Location location = event.getClickedBlock().getLocation();
-		
-		if (superBlocks.getSuperBlockLocations().contains(location)) {
-			if (CompMaterial.fromMaterial(material).is(CompMaterial.BELL.getMaterial()))
-				superBell.doFunction(player, location);
-			if (CompMaterial.fromMaterial(material).is(CompMaterial.BEACON.getMaterial())) {
-				if (!(player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) && player.isSneaking()) {
-					return;
-				} else if (!player.isSneaking() && (player.getInventory().getItemInMainHand().getType() == null)) {
-					event.setCancelled(true);
-					superBeacon.doFunction(player, location);
-				} else {
-					event.setCancelled(true);
-					superBeacon.doFunction(player, location);
-				}
-			}
-		}
-	}
-	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-	public void onExplosion(EntityExplodeEvent event) {
-		event.blockList().removeIf(block -> superBlocks.getSuperBlockLocations().contains(block.getLocation()) || superBlocks.getSuperBellOnLocations().contains(block.getLocation()));
-	}
-	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-	public void onPistonExtend(BlockPistonExtendEvent event) {
-		for (Block block : event.getBlocks())
-			if (superBlocks.getSuperBlockLocations().contains(block.getLocation()) || superBlocks.getSuperBellOnLocations().contains(block.getLocation()))
-				event.setCancelled(true);
-		
-	}
-	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-	public void onPistonRetract(BlockPistonRetractEvent event) {
-		for (Block block : event.getBlocks())
-			if (superBlocks.getSuperBlockLocations().contains(block.getLocation()) || superBlocks.getSuperBellOnLocations().contains(block.getLocation()))
-				event.setCancelled(true);
-		
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	public void onBlockShoot(ProjectileHitEvent event) {
-		if (event.getHitBlock() == null || !(event.getEntity().getShooter() instanceof Player))
-			return;
-		if (superBlocks.getSuperBlockLocations().contains(event.getHitBlock().getLocation())
-				&& event.getHitBlock().getType().equals(Material.BELL))
-			superBell.doFunction((Player) event.getEntity().getShooter(), event.getHitBlock().getLocation());
-	}
-	
-	@EventHandler
-	public void onShipPilot(CraftDetectEvent event) {
-		Craft craft = event.getCraft();
-		Player pilot = craft.getNotificationPlayer();
-		if (pilot == null) {
-			return;
-		}
-		
-		List<Location> superBlockLocations = superBlocks.getSuperBlockLocations()
-				.stream()
-				.filter(location -> craft.getHitBox().contains((int) location.getX(), (int) location.getY(), (int) location.getZ()))
-				.collect(Collectors.toList());
-		
-		if (superBlockLocations.size() == 0)
-			return;
-		
-		Common.tell(pilot, Settings.PREFIX + "&cCannot pilot ship: there is an amplified beacon or a player radar on ship!");
-		CompSound.ANVIL_LAND.play(pilot.getLocation(), 0.5F, 1F);
-		event.setCancelled(true);
-	}
-	
-	
+    private SuperBlocksPlugin superBlocks;
+    
+    private SuperBell superBell;
+    private SuperBeacon superBeacon;
+    
+    public SuperBlockListener(SuperBlocksPlugin plugin) {
+        this.superBlocks = plugin;
+        this.superBell = plugin.getSuperBell();
+        this.superBeacon = plugin.getSuperBeacon();
+    }
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockPlace(BlockPlaceEvent event) {
+        ItemStack item = event.getItemInHand();
+        Location location = event.getBlockPlaced().getLocation();
+        
+        if (superBell.isSuperBlock(item) && item.getType().equals(CompMaterial.BELL.getMaterial())) {
+            superBell.serialize(location, "bell");
+            superBell.serializeSettings(location, event.getBlockAgainst().getLocation());
+        }
+        
+        if (superBeacon.isSuperBlock(item) && item.getType().equals(CompMaterial.BEACON.getMaterial())) {
+            superBeacon.serialize(location, "beacon");
+            superBeacon.serializeSettings(location, event.getPlayer());
+        }
+        superBlocks.cacheSuperBlockLocations();
+    }
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockBreak(BlockBreakEvent event) {
+        Material material = event.getBlock().getType();
+        Player player = event.getPlayer();
+        Location location = event.getBlock().getLocation();
+        
+        if (superBlocks.getSuperBellOnLocations().contains(location)) {
+            event.setCancelled(true);
+            return;
+        }
+        
+        if (superBlocks.getSuperBlockLocations().contains(location)) {
+            event.setDropItems(false);
+            if (CompMaterial.fromMaterial(material).is(CompMaterial.BELL.getMaterial())) {
+                if (!player.getGameMode().equals(GameMode.CREATIVE))
+                    location.getWorld().dropItemNaturally(location, superBell.getItem());
+                superBell.removeFromFile(location);
+                superBell.removeSetting(location);
+            }
+            if (CompMaterial.fromMaterial(material).is(CompMaterial.BEACON.getMaterial())) {
+                if (!player.getGameMode().equals(GameMode.CREATIVE))
+                    location.getWorld().dropItemNaturally(location, superBeacon.getItem());
+                superBeacon.removeFromFile(location);
+                superBeacon.removeSetting(location);
+            }
+            superBlocks.cacheSuperBlockLocations();
+        }
+        
+    }
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onInteractEvent(PlayerInteractEvent event) {
+        if (event.getClickedBlock() == null || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+            return;
+        Material material = event.getClickedBlock().getType();
+        Player player = event.getPlayer();
+        Location location = event.getClickedBlock().getLocation();
+        
+        if (superBlocks.getSuperBlockLocations().contains(location)) {
+            if (CompMaterial.fromMaterial(material).is(CompMaterial.BELL.getMaterial()))
+                superBell.doFunction(player, location);
+            if (CompMaterial.fromMaterial(material).is(CompMaterial.BEACON.getMaterial())) {
+                if (!(player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) && player.isSneaking()) {
+                    return;
+                } else if (!player.isSneaking() && (player.getInventory().getItemInMainHand().getType() == null)) {
+                    event.setCancelled(true);
+                    superBeacon.doFunction(player, location);
+                } else {
+                    event.setCancelled(true);
+                    superBeacon.doFunction(player, location);
+                }
+            }
+        }
+    }
+    
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onExplosion(EntityExplodeEvent event) {
+        event.blockList().removeIf(block -> superBlocks.getSuperBlockLocations().contains(block.getLocation()) || superBlocks.getSuperBellOnLocations().contains(block.getLocation()));
+    }
+    
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onPistonExtend(BlockPistonExtendEvent event) {
+        for (Block block : event.getBlocks())
+            if (superBlocks.getSuperBlockLocations().contains(block.getLocation()) || superBlocks.getSuperBellOnLocations().contains(block.getLocation()))
+                event.setCancelled(true);
+        
+    }
+    
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onPistonRetract(BlockPistonRetractEvent event) {
+        for (Block block : event.getBlocks())
+            if (superBlocks.getSuperBlockLocations().contains(block.getLocation()) || superBlocks.getSuperBellOnLocations().contains(block.getLocation()))
+                event.setCancelled(true);
+        
+    }
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockShoot(ProjectileHitEvent event) {
+        if (event.getHitBlock() == null || !(event.getEntity().getShooter() instanceof Player))
+            return;
+        if (superBlocks.getSuperBlockLocations().contains(event.getHitBlock().getLocation())
+                && event.getHitBlock().getType().equals(Material.BELL))
+            superBell.doFunction((Player) event.getEntity().getShooter(), event.getHitBlock().getLocation());
+    }
+    
+    @EventHandler
+    public void onShipPilot(CraftDetectEvent event) {
+        Craft craft = event.getCraft();
+        Player pilot = craft.getNotificationPlayer();
+        if (pilot == null) {
+            return;
+        }
+        
+        List<Location> superBlockLocations = superBlocks.getSuperBlockLocations()
+                .stream()
+                .filter(location -> craft.getHitBox().contains((int) location.getX(), (int) location.getY(), (int) location.getZ()))
+                .collect(Collectors.toList());
+        
+        if (superBlockLocations.size() == 0)
+            return;
+        
+        Common.tell(pilot, Settings.PREFIX + "&cCannot pilot ship: there is an amplified beacon or a player radar on ship!");
+        CompSound.ANVIL_LAND.play(pilot.getLocation(), 0.5F, 1F);
+        event.setCancelled(true);
+    }
+    
+    
 }
