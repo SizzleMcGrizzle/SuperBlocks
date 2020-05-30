@@ -9,7 +9,7 @@ public class SuperBlocksGetcurrencyCommand extends SimpleSubCommand {
 		super(parent, "getcurrency");
 		setPermission("superblocks.getcurrency");
 	}
-
+	
 	@Override
 	protected void onCommand() {
 		getPlayer().getInventory().addItem(Settings.CURRENCY);

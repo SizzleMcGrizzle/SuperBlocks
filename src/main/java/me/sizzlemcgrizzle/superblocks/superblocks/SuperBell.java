@@ -1,58 +1,28 @@
 package me.sizzlemcgrizzle.superblocks.superblocks;
 
 import de.craftlancer.clclans.CLClans;
-import lombok.NonNull;
 import me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.mineacademy.fo.Common;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class SuperBell extends SuperBlock {
 	private CLClans clans = (CLClans) Bukkit.getPluginManager().getPlugin("CLClans");
 	
-	
-	private String name = ChatColor.GOLD + "" + ChatColor.BOLD + "Player Radar";
-	private List<String> lore = Arrays.asList(ChatColor.GRAY + "Place this radar down", ChatColor.GRAY + "and right click to", ChatColor.GRAY + "scan for players.");
 	private HashMap<Player, Long> cooldownMap = new HashMap<>();
 	
-	public SuperBell() {
-	}
-	
-	/*
-	 *** Make a new item and apply name and lore to it, then return it.
-	 */
-	@Override
-	public ItemStack getItem() {
-		ItemStack item = new ItemStack(CompMaterial.BELL.getMaterial());
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(name);
-		meta.setLore(lore);
-		item.setItemMeta(meta);
-		
-		return item;
-	}
-	
-	/*
-	 *** Validate that this item is a super bell.
-	 */
-	@Override
-	public boolean isSuperBlock(@NonNull ItemStack item) {
-		return (item.getItemMeta().getDisplayName().equals(name) && Objects.equals(item.getItemMeta().getLore(), lore));
+	public SuperBell(String name, List<String> lore, Material material) {
+		super(name, lore, material);
 	}
 	
 	@Override

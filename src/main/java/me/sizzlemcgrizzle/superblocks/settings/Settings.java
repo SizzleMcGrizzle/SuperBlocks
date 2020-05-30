@@ -9,17 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Settings extends SimpleSettings {
-
+	
 	@Override
 	protected int getConfigVersion() {
 		return 1;
 	}
-
+	
 	public static String PREFIX;
 	public static ItemStack CURRENCY;
 	public static List<Material> PASSTHROUGH_BLOCKS_MATERIAL;
 	public static List<String> PASSTHROUGH_BLOCKS_STRING;
-
+	
 	private static void init() {
 		PREFIX = getString("Prefix");
 		CURRENCY = getConfig().getItemStack("Currency");

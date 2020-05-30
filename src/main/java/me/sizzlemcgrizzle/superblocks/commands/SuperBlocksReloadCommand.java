@@ -11,7 +11,7 @@ public class SuperBlocksReloadCommand extends SimpleSubCommand {
 		super(parent, "reload");
 		setPermission("superblocks.reload");
 	}
-
+	
 	@Override
 	protected void onCommand() {
 		try {
@@ -19,9 +19,9 @@ public class SuperBlocksReloadCommand extends SimpleSubCommand {
 			tell(Settings.PREFIX + "&7SuperBlocks configuration has been successfully reloaded.");
 		} catch (Throwable t) {
 			t.printStackTrace();
-
+			
 			tell(SimpleLocalization.Commands.RELOAD_FAIL.replace("{error}", t.toString()));
-
+			
 		}
 	}
 }

@@ -13,9 +13,15 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class BeaconEffect extends BukkitRunnable {
-	private SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
+	private SuperBlocksPlugin superBlocks;
 	private CLClans clans = (CLClans) Bukkit.getPluginManager().getPlugin("CLClans");
-	private SuperBeacon superBeacon = new SuperBeacon();
+	
+	private SuperBeacon superBeacon;
+	
+	public BeaconEffect(SuperBlocksPlugin plugin) {
+		this.superBlocks = plugin;
+		this.superBeacon = plugin.getSuperBeacon();
+	}
 	
 	@Override
 	public void run() {
@@ -26,7 +32,7 @@ public class BeaconEffect extends BukkitRunnable {
 		
 		for (BeaconData beacon : beacons)
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (player.getLocation().getWorld() != beacon.getLocation().getWorld() || getHorizontalDistanceSquared(player.getLocation(), beacon.getLocation()) >= 2500)
+				if (player.getLocation().getWorld() != beacon.getLocation().getWorld() || getHorizontalDistanceSquared(player.getLocation(), beacon.getLocation()) >= beacon.getRange())
 					continue;
 				
 				if (isClanMember(beacon.getOwner(), player.getUniqueId())) {

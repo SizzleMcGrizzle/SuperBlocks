@@ -10,12 +10,12 @@ public class SuperBlocksCommandGroup extends SimpleCommandGroup {
 		registerSubcommand(new SuperBlocksGetcurrencyCommand(this));
 		registerSubcommand(new SuperBlocksReloadCommand(this));
 	}
-
+	
 	@Override
 	protected String getCredits() {
 		return "";
 	}
-
+	
 	@Override
 	protected String getHeaderPrefix() {
 		return "&6&l";

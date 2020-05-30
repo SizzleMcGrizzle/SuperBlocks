@@ -4,7 +4,6 @@ import me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin;
 import me.sizzlemcgrizzle.superblocks.settings.Settings;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.events.CraftDetectEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,9 +29,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SuperBlockListener implements Listener {
-	private SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
-	private SuperBell superBell = new SuperBell();
-	private SuperBeacon superBeacon = new SuperBeacon();
+	private SuperBlocksPlugin superBlocks;
+	
+	private SuperBell superBell;
+	private SuperBeacon superBeacon;
+	
+	public SuperBlockListener(SuperBlocksPlugin plugin) {
+		this.superBlocks = plugin;
+		this.superBell = plugin.getSuperBell();
+		this.superBeacon = plugin.getSuperBeacon();
+	}
 	
 	@EventHandler(ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
@@ -143,6 +149,7 @@ public class SuperBlockListener implements Listener {
 		if (pilot == null) {
 			return;
 		}
+		
 		List<Location> superBlockLocations = superBlocks.getSuperBlockLocations()
 				.stream()
 				.filter(location -> craft.getHitBox().contains((int) location.getX(), (int) location.getY(), (int) location.getZ()))
@@ -155,5 +162,6 @@ public class SuperBlockListener implements Listener {
 		CompSound.ANVIL_LAND.play(pilot.getLocation(), 0.5F, 1F);
 		event.setCancelled(true);
 	}
+	
 	
 }

@@ -23,7 +23,7 @@ public class SuperBlocksConfigCommand extends SimpleSubCommand {
 		setPermission("superblocks.config");
 		setMinArguments(1);
 	}
-
+	
 	@Override
 	protected List<String> tabComplete() {
 		if (args.length == 1)
@@ -32,13 +32,13 @@ public class SuperBlocksConfigCommand extends SimpleSubCommand {
 			return completeLastWord(Settings.PASSTHROUGH_BLOCKS_STRING);
 		return new ArrayList<>();
 	}
-
+	
 	@Override
 	protected void onCommand() {
 		checkConsole();
-
+		
 		ItemStack item = getPlayer().getInventory().getItemInMainHand();
-
+		
 		File file = new File(SimplePlugin.getInstance().getDataFolder(), "settings.yml");
 		YamlConfiguration config = new YamlConfiguration();
 		try {
@@ -48,8 +48,8 @@ public class SuperBlocksConfigCommand extends SimpleSubCommand {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-
-
+		
+		
 		if (args[0].equalsIgnoreCase("setCurrency")) {
 			if (CompMaterial.isAir(item.getType()) || !item.getItemMeta().hasDisplayName()) {
 				tell(Settings.PREFIX + "&cYou must be holding an item with a special name!");
@@ -57,8 +57,8 @@ public class SuperBlocksConfigCommand extends SimpleSubCommand {
 			}
 			config.set("Currency", item);
 			tell(Settings.PREFIX + "&7The currency has been set to an item named " + item.getItemMeta().getDisplayName() + "&7. &2/superblocks reload&7 to apply changes.");
-
-
+			
+			
 		} else if (args[0].equalsIgnoreCase("setPrefix")) {
 			if (args.length < 2) {
 				tell(Settings.PREFIX + "&cYou did not enter a prefix!");
@@ -66,8 +66,8 @@ public class SuperBlocksConfigCommand extends SimpleSubCommand {
 			}
 			config.set("Prefix", args[1] + " ");
 			tell(Settings.PREFIX + "&7You have changed the prefix. &2/superblocks reload&7 to apply changes.");
-
-
+			
+			
 		} else if (args[0].equalsIgnoreCase("addPassthroughBlock")) {
 			List<String> serList = Settings.PASSTHROUGH_BLOCKS_STRING;
 			if (CompMaterial.isAir(item.getType())) {
@@ -102,7 +102,7 @@ public class SuperBlocksConfigCommand extends SimpleSubCommand {
 			tell(Settings.PREFIX + "&cYou did not enter a valid argument. &oHint: use tab complete!");
 			return;
 		}
-
+		
 		try {
 			config.save(file);
 		} catch (IOException e) {

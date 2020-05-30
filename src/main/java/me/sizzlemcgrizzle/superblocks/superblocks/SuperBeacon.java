@@ -1,11 +1,8 @@
 package me.sizzlemcgrizzle.superblocks.superblocks;
 
-import lombok.NonNull;
 import me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin;
 import me.sizzlemcgrizzle.superblocks.beacon.BeaconPreferencesMenu;
 import me.sizzlemcgrizzle.superblocks.settings.Settings;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -13,38 +10,16 @@ import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.mineacademy.fo.Common;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class SuperBeacon extends SuperBlock {
-	private SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
-	private String name = ChatColor.AQUA + "" + ChatColor.ITALIC + "Amplified Beacon";
-	private List<String> lore = Arrays.asList(ChatColor.GRAY + "Place this beacon down", ChatColor.GRAY + "and right click to", ChatColor.GRAY + "edit properties");
 	
-	public SuperBeacon() {
-	}
-	
-	@Override
-	public ItemStack getItem() {
-		ItemStack item = new ItemStack(CompMaterial.BEACON.getMaterial());
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(name);
-		meta.setLore(lore);
-		item.setItemMeta(meta);
-		return item;
-	}
-	
-	@Override
-	public boolean isSuperBlock(@NonNull ItemStack item) {
-		return (item.getItemMeta().getDisplayName().equals(name) && Objects.equals(item.getItemMeta().getLore(), lore));
+	public SuperBeacon(String name, List<String> lore, Material material) {
+		super(name, lore, material);
 	}
 	
 	@Override
@@ -110,12 +85,12 @@ public class SuperBeacon extends SuperBlock {
 	 *   Are there any non-transparent blocks above it?
 	 *   Does it have a 3x3 of iron/diamond/emerald/gold blocks under it?
 	 */
-	public boolean isBeaconActive(Location location) {
-		double x = location.getX();
-		double y = location.getY();
-		double z = location.getZ();
-		World world = location.getWorld();
-		if (!world.isChunkLoaded(location.getBlockX() >> 4, location.getBlockZ() >> 4))
+	public boolean isBeaconActive(Location beaconLocation) {
+		double x = beaconLocation.getX();
+		double y = beaconLocation.getY();
+		double z = beaconLocation.getZ();
+		World world = beaconLocation.getWorld();
+		if (world == null || !world.isChunkLoaded(beaconLocation.getBlockX() >> 4, beaconLocation.getBlockZ() >> 4))
 			return false;
 		
 		if (!isBeaconActivateBlock(new Location(world, x, y - 1, z).getBlock().getType())) return false;

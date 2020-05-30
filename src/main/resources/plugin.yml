@@ -9,4 +9,31 @@ depend:
   - CLCore
 softdepend:
   - Movecraft
+  - GriefPrevention
+  - WorldGuard
+permissions:
+  superblocks.config:
+    default: op
+  superblocks.get:
+    default: op
+  superblocks.getcurrency:
+    default: op
+  superblocks.reload:
+    default: op
+commands:
+  superblocks:
+    description: "Main command for SuperBlocks plugin"
+    usage: /superblocks
+  superblocks get:
+    description: "Get a superblock by specifying which type"
+    usage: /superblocks get [type]
+  superblocks getcurrency:
+    description: "Get the set currency of the plugin"
+    usage: /superblocks getCurrency
+  superblocks relaod:
+    description: "Reloads the plugin"
+    usage: /superblocks reload
+  superblocks config:
+    description: "Config commands to edit the config in game"
+    usage: /superblocks config [setPrefix|setCurrency|addPassthroughBlock|removePassthroughBlock]
 
