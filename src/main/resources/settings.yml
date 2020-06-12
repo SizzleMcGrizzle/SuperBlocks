@@ -2,7 +2,10 @@ Prefix: "&8[&6SuperBlocks&8] "
 Beacon_Passthrough_Blocks:
   - SHULKER_BOX
   - BEDROCK
-Currency:
+
+Use_Economy: true
+Currency_Money: 300.00
+Currency_Item:
   ==: org.bukkit.inventory.ItemStack
   v: 1976
   type: GHAST_TEAR

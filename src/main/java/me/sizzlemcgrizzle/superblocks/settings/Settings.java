@@ -5,9 +5,6 @@ import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.collection.StrictList;
 import org.mineacademy.fo.settings.SimpleSettings;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Settings extends SimpleSettings {
     
     @Override
@@ -16,21 +13,16 @@ public class Settings extends SimpleSettings {
     }
     
     public static String PREFIX;
-    public static ItemStack CURRENCY;
-    public static List<Material> PASSTHROUGH_BLOCKS_MATERIAL;
-    public static List<String> PASSTHROUGH_BLOCKS_STRING;
+    public static Boolean USE_ECONOMY;
+    public static Double CURRENCY_MONEY;
+    public static ItemStack CURRENCY_ITEM;
+    public static StrictList<Material> PASSTHROUGH_BLOCKS_MATERIAL;
     
     private static void init() {
         PREFIX = getString("Prefix");
-        CURRENCY = getConfig().getItemStack("Currency");
-        StrictList<Material> list = getMaterialList("Beacon_Passthrough_Blocks");
-        List<Material> matList = new ArrayList<>();
-        List<String> strList = new ArrayList<>();
-        for (Material mat : list) {
-            matList.add(mat);
-            strList.add(mat.toString());
-        }
-        PASSTHROUGH_BLOCKS_MATERIAL = matList;
-        PASSTHROUGH_BLOCKS_STRING = strList;
+        USE_ECONOMY = getBoolean("Use_Economy");
+        CURRENCY_MONEY = getDouble("Currency_Money");
+        CURRENCY_ITEM = getConfig().getItemStack("Currency_Item");
+        PASSTHROUGH_BLOCKS_MATERIAL = getMaterialList("Beacon_Passthrough_Blocks");
     }
 }

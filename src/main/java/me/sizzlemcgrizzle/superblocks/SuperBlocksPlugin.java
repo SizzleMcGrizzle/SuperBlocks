@@ -8,12 +8,14 @@ import me.sizzlemcgrizzle.superblocks.settings.Settings;
 import me.sizzlemcgrizzle.superblocks.superblocks.SuperBeacon;
 import me.sizzlemcgrizzle.superblocks.superblocks.SuperBell;
 import me.sizzlemcgrizzle.superblocks.superblocks.SuperBlockListener;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.settings.YamlStaticConfig;
 
@@ -25,6 +27,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class SuperBlocksPlugin extends SimplePlugin {
+    private static Economy econ = null;
+    
     private List<BeaconData> beacons = new ArrayList<>();
     private List<Location> superBlockLocations = new ArrayList<>();
     private List<Location> superBellOnlocations = new ArrayList<>();
@@ -35,6 +39,9 @@ public class SuperBlocksPlugin extends SimplePlugin {
     
     @Override
     public void onPluginStart() {
+        
+        if (Settings.USE_ECONOMY)
+            setupEconomy();
         
         if (!folder.exists()) {
             folder.mkdir();
@@ -53,11 +60,6 @@ public class SuperBlocksPlugin extends SimplePlugin {
         
         cacheSuperBlockLocations();
         activateBeaconTimer();
-        
-        /*RecolorCommand recolor = new RecolorCommand();
-        getCommand("recolor").setExecutor(recolor);
-        registerEvents(recolor);*/
-        
     }
     
     
@@ -73,6 +75,18 @@ public class SuperBlocksPlugin extends SimplePlugin {
     @Override
     public List<Class<? extends YamlStaticConfig>> getSettings() {
         return Arrays.asList(Settings.class);
+    }
+    
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
     }
     
     private void activateBeaconTimer() {
@@ -173,5 +187,9 @@ public class SuperBlocksPlugin extends SimplePlugin {
     
     public SuperBell getSuperBell() {
         return superBell;
+    }
+    
+    public static Economy getEconomy() {
+        return econ;
     }
 }

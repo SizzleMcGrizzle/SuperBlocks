@@ -12,7 +12,7 @@ public class SuperBlocksGetcurrencyCommand extends SimpleSubCommand {
     
     @Override
     protected void onCommand() {
-        getPlayer().getInventory().addItem(Settings.CURRENCY);
+        getPlayer().getInventory().addItem(Settings.CURRENCY_ITEM);
         tell(Settings.PREFIX + "&7You have been given this plugin's currency.");
     }
 }

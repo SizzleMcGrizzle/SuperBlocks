@@ -11,6 +11,7 @@ softdepend:
   - Movecraft
   - GriefPrevention
   - WorldGuard
+  - Vault
 permissions:
   superblocks.config:
     default: op

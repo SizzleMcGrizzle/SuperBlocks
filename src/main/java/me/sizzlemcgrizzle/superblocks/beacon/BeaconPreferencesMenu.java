@@ -6,6 +6,7 @@ import me.sizzlemcgrizzle.superblocks.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -533,33 +534,45 @@ public class BeaconPreferencesMenu extends Menu {
         if (!isOwnerOrInOwnerClan(player, uuid))
             return;
         
-        Inventory inventory = player.getInventory();
-        ItemStack currency = Settings.CURRENCY;
-        ItemStack clone;
-        currency.setAmount(1);
-        for (ItemStack item : inventory.getContents()) {
-            if (item == null || item.getType().equals(Material.AIR))
-                continue;
-            clone = item.clone();
-            clone.setAmount(1);
-            if (clone.equals(currency)) {
-                item.setAmount(item.getAmount() - 1);
-                player.updateInventory();
+        if (Settings.USE_ECONOMY) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
+            
+            if (!SuperBlocksPlugin.getEconomy().has(offlinePlayer, Settings.CURRENCY_MONEY)) {
+                Common.tell(player, Settings.PREFIX + "&cYou do not have $" + Settings.CURRENCY_MONEY + " to pay!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 0.5F);
+            } else {
+                SuperBlocksPlugin.getEconomy().withdrawPlayer(offlinePlayer, Settings.CURRENCY_MONEY);
                 Common.tell(player, Settings.PREFIX + "&aYou have extended the power of this beacon by 1 week.");
                 extendTime();
                 restartMenu("&5Added one week of power");
-                return;
             }
+        } else {
+            Inventory inventory = player.getInventory();
+            ItemStack clone;
+            for (ItemStack item : inventory.getContents()) {
+                if (item == null || item.getType().equals(Material.AIR))
+                    continue;
+                clone = item.clone();
+                clone.setAmount(1);
+                if (clone.isSimilar(Settings.CURRENCY_ITEM)) {
+                    item.setAmount(item.getAmount() - 1);
+                    player.updateInventory();
+                    Common.tell(player, Settings.PREFIX + "&aYou have extended the power of this beacon by 1 week.");
+                    extendTime();
+                    restartMenu("&5Added one week of power");
+                    return;
+                }
+            }
+            
+            SimpleComponent
+                    .of(Settings.PREFIX)
+                    .append("&cYou do not have one ")
+                    .append(Settings.CURRENCY_ITEM.getItemMeta().getDisplayName())
+                    .onHover(Settings.CURRENCY_ITEM)
+                    .append(" &r&cto &cpay!")
+                    .send(getViewer());
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 0.5F);
         }
-        
-        SimpleComponent
-                .of(Settings.PREFIX)
-                .append("&cYou do not have one ")
-                .append(currency.getItemMeta().getDisplayName())
-                .onHover(currency)
-                .append(" &r&cto pay!")
-                .send(getViewer());
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 0.5F);
     }
     
     
