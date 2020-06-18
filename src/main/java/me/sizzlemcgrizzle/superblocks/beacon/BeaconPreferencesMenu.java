@@ -496,7 +496,7 @@ public class BeaconPreferencesMenu extends Menu {
         
         try {
             long time = configurationSection.getLong("expires");
-            if (time == 0)
+            if (time == 0 || System.currentTimeMillis() > time)
                 configurationSection.set("expires", System.currentTimeMillis() + 604800000);
             else
                 configurationSection.set("expires", time + 604800000);
@@ -511,9 +511,9 @@ public class BeaconPreferencesMenu extends Menu {
         long expires = configurationSection.getLong("expires");
         long difference = expires - System.currentTimeMillis();
         
-        if (expires == 0) {
+        if (expires == 0)
             return "&cInactive";
-        }
+        
         int months, days, hours, minutes, seconds;
         
         months = (int) (difference / 2628000000L);
@@ -526,7 +526,7 @@ public class BeaconPreferencesMenu extends Menu {
         difference -= minutes * 60000L;
         seconds = (int) (difference / 1000);
         
-        return "&e" + months + "m&7-&e" + days + "d&7-&e" + hours + "h&7-&e" + minutes + "m&7-&e" + seconds + "s";
+        return "&e" + Integer.max(months, 0) + "m&7-&e" + Integer.max(days, 0) + "d&7-&e" + Integer.max(hours, 0) + "h&7-&e" + Integer.max(minutes, 0) + "m&7-&e" + Integer.max(seconds, 0) + "s";
     }
     
     private void extendButtonClick(Player player) {
