@@ -1,16 +1,14 @@
 package me.sizzlemcgrizzle.superblocks.beacon;
 
 import de.craftlancer.clclans.CLClans;
+import me.sizzlemcgrizzle.superblocks.SuperBeacon;
 import me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin;
 import me.sizzlemcgrizzle.superblocks.settings.Settings;
+import me.sizzlemcgrizzle.superblocks.util.SuperBlocksUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -23,11 +21,12 @@ import org.mineacademy.fo.model.SimpleComponent;
 import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.remain.CompMaterial;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 
 public class BeaconPreferencesMenu extends Menu {
+    
+    private SuperBeacon beacon;
+    
     //Buffs
     private final Button regenButton;
     private final Button strengthButton;
@@ -59,29 +58,18 @@ public class BeaconPreferencesMenu extends Menu {
     private final Button durationButton;
     private final Button refreshButton;
     
-    private ConfigurationSection configurationSection;
-    private YamlConfiguration config;
-    private File file;
     private CLClans clans = (CLClans) Bukkit.getPluginManager().getPlugin("CLClans");
     private String time;
     
-    public BeaconPreferencesMenu(Location location) {
-        this.file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/beacons.yml");
-        this.config = new YamlConfiguration();
+    public BeaconPreferencesMenu(SuperBeacon beacon) {
         
-        try {
-            String serializedLocation = (int) location.getX() + "&-&" + (int) location.getY() + "&-&" + (int) location.getZ() + "&-&" + location.getWorld().getName();
-            setTitle("&9Amplified Beacon Control Panel");
-            setSound(new SimpleSound(Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1F, 2F));
-            setSize(9 * 6);
-            
-            config.load(file);
-            this.configurationSection = config.getConfigurationSection(serializedLocation);
-            
-            time = getTime();
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
+        this.beacon = beacon;
+        
+        setTitle("&9Amplified Beacon Control Panel");
+        setSound(new SimpleSound(Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1F, 2F));
+        setSize(9 * 6);
+        
+        time = getTime();
         
         
         regenButton = new Button() {
@@ -399,11 +387,11 @@ public class BeaconPreferencesMenu extends Menu {
     
     
     private boolean containsEffect(String effect) {
-        if (getKey("buff1").equals(effect))
+        if (beacon.getBuff1() != null && beacon.getBuff1().equals(SuperBlocksUtil.getPotionFromString(effect)))
             return true;
-        if (getKey("buff2").equals(effect))
+        if (beacon.getBuff2() != null && beacon.getBuff2().equals(SuperBlocksUtil.getPotionFromString(effect)))
             return true;
-        return (getKey("debuff").equals(effect));
+        return (beacon.getDebuff() != null && beacon.getDebuff().equals(SuperBlocksUtil.getPotionFromString(effect)));
     }
     
     private boolean isOwnerOrInOwnerClan(Player player, UUID uuid) {
@@ -427,91 +415,63 @@ public class BeaconPreferencesMenu extends Menu {
     }
     
     private void changeSettings(Player player, String effect, Boolean isBuff) {
-        SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
-        UUID uuid = UUID.fromString(configurationSection.getString("playerUUID"));
+        UUID uuid = beacon.getOwner();
         if (!isOwnerOrInOwnerClan(player, uuid))
             return;
-        try {
-            //If the effect is a buff, then...
-            if (!isBuff) {
-                //It's a debuff. Set buffs to none.
-                setKey("buff1", "none");
-                setKey("buff2", "none");
-                //If the effect == saved effect, set it to none.
-                if (getKey("debuff").equals(effect)) {
-                    setKey("debuff", "none");
-                } else {
-                    setKey("debuff", effect);
-                }
+        //If the effect is a buff, then...
+        if (!isBuff) {
+            //It's a debuff. Set buffs to none.
+            beacon.setBuff1(null);
+            beacon.setBuff2(null);
+            //If the effect == saved effect, set it to none.
+            if (beacon.getDebuff() != null && beacon.getDebuff().equals(SuperBlocksUtil.getPotionFromString(effect))) {
+                beacon.setDebuff(null);
             } else {
-                //It's a buff. Set debuffs to none.
-                setKey("debuff", "none");
-                //If both slots are empty then set the effect to the first one.
-                if (getKey("buff1").equals("none") && getKey("buff2").equals("none")) {
-                    setKey("buff1", effect);
-                    //If the first slot is not empty, then...
-                } else if (!getKey("buff1").equals("none") && getKey("buff2").equals("none")) {
-                    //If they are the same, first slot == none
-                    if (getKey("buff1").equals(effect)) {
-                        setKey("buff1", "none");
-                        //If they are different, second slot is filled.
-                    } else {
-                        setKey("buff2", effect);
-                    }
-                    //if the second slot is filled,
-                } else if (!getKey("buff2").equals("none") && getKey("buff1").equals("none")) {
-                    if (getKey("buff2").equals(effect)) {
-                        setKey("buff2", "none");
-                    } else {
-                        setKey("buff1", effect);
-                    }
-                } else {
-                    if (getKey("buff1").equals(effect)) {
-                        setKey("buff1", "none");
-                    } else if (getKey("buff2").equals(effect)) {
-                        setKey("buff2", "none");
-                    } else
-                        Common.tell(getViewer(), Settings.PREFIX + "&cPlease de-select a buff before adding another.");
-                }
+                beacon.setDebuff(SuperBlocksUtil.getPotionFromString(effect));
             }
-            config.save(file);
-            superBlocks.cacheBeacons();
-            restartMenu();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            //It's a buff. Set debuffs to none.
+            beacon.setDebuff(null);
+            //If both slots are empty then set the effect to the first one.
+            if (beacon.getBuff1() == null && beacon.getBuff2() == null)
+                beacon.setBuff1(SuperBlocksUtil.getPotionFromString(effect));
+                //If the first slot is not empty, then...
+            else if (beacon.getBuff1() != null && beacon.getBuff2() == null)
+                //If they are the same, first slot == none
+                if (beacon.getBuff1().equals(SuperBlocksUtil.getPotionFromString(effect)))
+                    beacon.setBuff1(null);
+                    //If they are different, second slot is filled.
+                else
+                    beacon.setBuff2(SuperBlocksUtil.getPotionFromString(effect));
+                //if the second slot is filled,
+            else if (beacon.getBuff2() != null && beacon.getBuff1() == null)
+                if (beacon.getBuff2().equals(SuperBlocksUtil.getPotionFromString(effect)))
+                    beacon.setBuff2(null);
+                else
+                    beacon.setBuff1(SuperBlocksUtil.getPotionFromString(effect));
+            else if (beacon.getBuff1().equals(SuperBlocksUtil.getPotionFromString(effect)))
+                beacon.setBuff1(null);
+            else if (beacon.getBuff2().equals(SuperBlocksUtil.getPotionFromString(effect)))
+                beacon.setBuff2(null);
+            else
+                Common.tell(getViewer(), Settings.PREFIX + "&cPlease de-select a buff before adding another.");
         }
-    }
-    
-    private String getKey(String value) {
-        return ((String) configurationSection.get(value));
-    }
-    
-    private void setKey(String key, String value) {
-        getViewer().playSound(getViewer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 2F);
-        configurationSection.set(key, value);
+        restartMenu();
     }
     
     private void extendTime() {
-        SuperBlocksPlugin superBlocks = (SuperBlocksPlugin) Bukkit.getPluginManager().getPlugin("SuperBlocks");
-        
-        try {
-            long time = configurationSection.getLong("expires");
-            if (time == 0 || System.currentTimeMillis() > time)
-                configurationSection.set("expires", System.currentTimeMillis() + 604800000);
-            else
-                configurationSection.set("expires", time + 604800000);
-            config.save(file);
-            superBlocks.cacheBeacons();
-        } catch (IOException | NullPointerException e) {
-            Common.tell(getViewer(), Settings.PREFIX + "&cThis beacon is broken... Contact an admin for assistance.");
-        }
+        long time = beacon.getExpireTime();
+        if (time == 0 || System.currentTimeMillis() > time)
+            beacon.setExpireTime(System.currentTimeMillis() + 604800000);
+        else
+            beacon.setExpireTime(time + 604800000);
     }
     
     private String getTime() {
-        long expires = configurationSection.getLong("expires");
+        long expires = beacon.getExpireTime();
         long difference = expires - System.currentTimeMillis();
         
-        if (expires == 0)
+        if (expires == 0 || expires < System.currentTimeMillis())
             return "&cInactive";
         
         int months, days, hours, minutes, seconds;
@@ -530,7 +490,7 @@ public class BeaconPreferencesMenu extends Menu {
     }
     
     private void extendButtonClick(Player player) {
-        UUID uuid = UUID.fromString(configurationSection.getString("playerUUID"));
+        UUID uuid = beacon.getOwner();
         if (!isOwnerOrInOwnerClan(player, uuid))
             return;
         

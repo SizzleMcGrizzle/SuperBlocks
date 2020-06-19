@@ -1,38 +1,34 @@
 package me.sizzlemcgrizzle.superblocks.beacon;
 
 import de.craftlancer.clclans.CLClans;
+import me.sizzlemcgrizzle.superblocks.SuperBeacon;
+import me.sizzlemcgrizzle.superblocks.SuperBlock;
 import me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin;
-import me.sizzlemcgrizzle.superblocks.superblocks.SuperBeacon;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class BeaconEffect extends BukkitRunnable {
-    private SuperBlocksPlugin superBlocks;
+    private SuperBlocksPlugin plugin;
     private CLClans clans = (CLClans) Bukkit.getPluginManager().getPlugin("CLClans");
     
     private SuperBeacon superBeacon;
     
     public BeaconEffect(SuperBlocksPlugin plugin) {
-        this.superBlocks = plugin;
-        this.superBeacon = plugin.getSuperBeacon();
+        this.plugin = plugin;
     }
     
     @Override
     public void run() {
-        List<BeaconData> beacons = superBlocks.getBeacons().stream()
-                .filter(beacon -> (superBeacon.isBeaconActive(beacon.getLocation()) && System.currentTimeMillis() <= beacon.getExpireTime()))
-                .collect(Collectors.toList());
-        
-        
-        for (BeaconData beacon : beacons)
+        for (SuperBlock block : plugin.getSuperBlocks().stream().filter(block -> block instanceof SuperBeacon).filter(block -> ((SuperBeacon) block).isActive()).collect(Collectors.toList())) {
+            SuperBeacon beacon = (SuperBeacon) block;
+            Location location = beacon.getStructure().get(0);
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getLocation().getWorld() != beacon.getLocation().getWorld() || getHorizontalDistanceSquared(player.getLocation(), beacon.getLocation()) >= beacon.getRange())
+                if (player.getLocation().getWorld() != location.getWorld() || getHorizontalDistanceSquared(player.getLocation(), location) >= beacon.getRange())
                     continue;
                 
                 if (isClanMember(beacon.getOwner(), player.getUniqueId())) {
@@ -47,6 +43,7 @@ public class BeaconEffect extends BukkitRunnable {
                 }
                 
             }
+        }
     }
     
     private boolean isClanMember(UUID uuid, UUID playerUUID) {

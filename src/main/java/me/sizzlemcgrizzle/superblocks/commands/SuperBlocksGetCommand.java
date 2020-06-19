@@ -1,5 +1,7 @@
 package me.sizzlemcgrizzle.superblocks.commands;
 
+import me.sizzlemcgrizzle.superblocks.SuperBeacon;
+import me.sizzlemcgrizzle.superblocks.SuperBell;
 import me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin;
 import me.sizzlemcgrizzle.superblocks.settings.Settings;
 import org.mineacademy.fo.command.SimpleCommandGroup;
@@ -25,7 +27,7 @@ public class SuperBlocksGetCommand extends SimpleSubCommand {
     @Override
     protected List<String> tabComplete() {
         if (args.length == 1) {
-            return Arrays.asList("bell", "beacon");
+            return completeLastWord(Arrays.asList("bell", "beacon"));
         }
         return new ArrayList<>();
     }
@@ -35,10 +37,10 @@ public class SuperBlocksGetCommand extends SimpleSubCommand {
         checkConsole();
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("bell")) {
-                getPlayer().getInventory().addItem(superBlocks.getSuperBell().getItem());
+                getPlayer().getInventory().addItem(SuperBell.getItem());
                 tell(Settings.PREFIX + "&eYou have recieved a &6&lPlayer Radar&e.");
             } else if (args[0].equalsIgnoreCase("beacon")) {
-                getPlayer().getInventory().addItem(superBlocks.getSuperBeacon().getItem());
+                getPlayer().getInventory().addItem(SuperBeacon.getItem());
                 tell(Settings.PREFIX + "&eYou have recieved an &b&oAmplifiedBeacon&e.");
             } else
                 tell(Settings.PREFIX + "&cYou did not enter a valid super block type.");

@@ -1,35 +1,48 @@
-package me.sizzlemcgrizzle.superblocks.superblocks;
+package me.sizzlemcgrizzle.superblocks;
 
 import de.craftlancer.clclans.CLClans;
-import me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin;
+import me.sizzlemcgrizzle.superblocks.settings.Settings;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import org.mineacademy.fo.Common;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class SuperBell extends SuperBlock {
+    
     private CLClans clans = (CLClans) Bukkit.getPluginManager().getPlugin("CLClans");
     
     private HashMap<Player, Long> cooldownMap = new HashMap<>();
     
-    public SuperBell(String name, List<String> lore, Material material) {
-        super(name, lore, material);
+    public SuperBell(List<Location> structure, UUID owner) {
+        super(structure, owner);
+    }
+    
+    public SuperBell(Map<String, Object> map) {
+        super(map);
+    }
+    
+    @Override
+    public @NotNull Map<String, Object> serialize() {
+        return super.serialize();
     }
     
     @Override
     public void doFunction(Player player, Location location) {
         if (cooldownMap.containsKey(player)) {
             if (cooldownMap.get(player) + 60000L >= System.currentTimeMillis()) {
-                Common.tell(player, "&f[&4Craft&fCitizen]&e You must wait &c" + (cooldownMap.get(player) + 60000L - System.currentTimeMillis()) / 1000L + " seconds&e to use this again.");
+                Common.tell(player, Settings.PREFIX + "&e You must wait &c" + (cooldownMap.get(player) + 60000L - System.currentTimeMillis()) / 1000L + " seconds&e to use this again.");
                 return;
             }
             
@@ -71,43 +84,14 @@ public class SuperBell extends SuperBlock {
         
     }
     
-    public void serializeSettings(Location bell, Location placedOn) {
-        File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/bells.yml");
-        YamlConfiguration config = new YamlConfiguration();
+    public static ItemStack getItem() {
+        ItemStack item = new ItemStack(Material.BELL);
+        ItemMeta meta = item.getItemMeta();
         
-        try {
-            if (!file.exists())
-                file.createNewFile();
-            
-            config.load(file);
-            
-            String serializeBell = (int) bell.getX() + "&-&" + (int) bell.getY() + "&-&" + (int) bell.getZ() + "&-&" + bell.getWorld().getName();
-            String serializePlacedOn = (int) placedOn.getX() + "&-&" + (int) placedOn.getY() + "&-&" + (int) placedOn.getZ() + "&-&" + placedOn.getWorld().getName();
-            
-            config.createSection(serializeBell);
-            config.getConfigurationSection(serializeBell).set("placedOn", serializePlacedOn);
-            config.save(file);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public void removeSetting(Location bell) {
-        File file = new File(SuperBlocksPlugin.getData().getAbsolutePath() + File.separator + "/Data/bells.yml");
-        YamlConfiguration config = new YamlConfiguration();
+        meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Player Radar");
+        meta.setLore(Arrays.asList(ChatColor.GRAY + "Place this radar down", ChatColor.GRAY + "and right click to", ChatColor.GRAY + "scan for players."));
         
-        try {
-            if (!file.exists())
-                file.createNewFile();
-            
-            config.load(file);
-            
-            String serializedLocation = (int) bell.getX() + "&-&" + (int) bell.getY() + "&-&" + (int) bell.getZ() + "&-&" + bell.getWorld().getName();
-            
-            config.set(serializedLocation, null);
-            config.save(file);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
+        item.setItemMeta(meta);
+        return item;
     }
 }

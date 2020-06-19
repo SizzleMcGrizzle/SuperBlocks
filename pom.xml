@@ -7,7 +7,7 @@
     <groupId>me.sizzlemcgrizzle</groupId>
     <artifactId>superblocks</artifactId>
     <name>SuperBlocks</name>
-    <version>1.2.4</version>
+    <version>1.3.0</version>
 
     <properties>
 
@@ -59,15 +59,15 @@
         </dependency>
         <dependency>
             <groupId>de.craftlancer</groupId>
-            <artifactId>CLClans</artifactId>
-            <version>RELEASE</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/depend/CLClans.jar</systemPath>
+            <artifactId>clclans</artifactId>
+            <version>0.3.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.SydMontague</groupId>
-            <artifactId>CLCore</artifactId>
-            <version>craftcitizen-6193dfce54-1</version>
+            <groupId>de.craftlancer</groupId>
+            <artifactId>clcore</artifactId>
+            <version>0.4.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.countercraft</groupId>
