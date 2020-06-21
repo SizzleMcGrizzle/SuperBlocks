@@ -2,7 +2,6 @@ package me.sizzlemcgrizzle.superblocks.beacon;
 
 import de.craftlancer.clclans.CLClans;
 import me.sizzlemcgrizzle.superblocks.SuperBeacon;
-import me.sizzlemcgrizzle.superblocks.SuperBlock;
 import me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class BeaconEffect extends BukkitRunnable {
     private SuperBlocksPlugin plugin;
@@ -24,7 +22,7 @@ public class BeaconEffect extends BukkitRunnable {
     
     @Override
     public void run() {
-        for (SuperBlock block : plugin.getSuperBlocks().stream().filter(block -> block instanceof SuperBeacon).filter(block -> ((SuperBeacon) block).isActive()).collect(Collectors.toList())) {
+        plugin.getSuperBlocks().stream().filter(block -> block instanceof SuperBeacon).filter(block -> ((SuperBeacon) block).isActive()).forEach(block -> {
             SuperBeacon beacon = (SuperBeacon) block;
             Location location = beacon.getStructure().get(0);
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -43,7 +41,7 @@ public class BeaconEffect extends BukkitRunnable {
                 }
                 
             }
-        }
+        });
     }
     
     private boolean isClanMember(UUID uuid, UUID playerUUID) {

@@ -13,7 +13,7 @@
 
         <main.class>me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin</main.class>
 
-        <foundation.version>5.3.6</foundation.version>
+        <foundation.version>5.4.1</foundation.version>
 
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
