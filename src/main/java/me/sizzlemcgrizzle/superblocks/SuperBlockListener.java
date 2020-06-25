@@ -128,12 +128,11 @@ public class SuperBlockListener implements Listener {
         Craft craft = event.getCraft();
         Player pilot = craft.getNotificationPlayer();
         
-        if (pilot == null) {
+        if (pilot == null)
             return;
-        }
         
         if (plugin.getSuperBlocks().stream().noneMatch(block -> block.getStructure().stream()
-                .noneMatch(location -> craft.getHitBox().contains((int) location.getX(), (int) location.getY(), (int) location.getZ()))))
+                .anyMatch(location -> craft.getHitBox().contains((int) location.getX(), (int) location.getY(), (int) location.getZ()))))
             return;
         
         Common.tell(pilot, Settings.PREFIX + "&cCannot pilot ship: there is an amplified beacon or a player radar on ship!");
