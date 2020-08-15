@@ -1,6 +1,5 @@
 package me.sizzlemcgrizzle.superblocks;
 
-import me.sizzlemcgrizzle.superblocks.beacon.BeaconPreferencesMenu;
 import me.sizzlemcgrizzle.superblocks.settings.Settings;
 import me.sizzlemcgrizzle.superblocks.util.SuperBlocksUtil;
 import org.bukkit.ChatColor;
@@ -12,9 +11,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
-import org.jetbrains.annotations.NotNull;
 import org.mineacademy.fo.Common;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +47,8 @@ public class SuperBeacon extends SuperBlock {
     }
     
     @Override
-    public @NotNull Map<String, Object> serialize() {
+    public @Nonnull
+    Map<String, Object> serialize() {
         Map<String, Object> map = super.serialize();
         
         map.put("buff1", SuperBlocksUtil.getStringFromPotion(buff1));

@@ -3,8 +3,8 @@ package me.sizzlemcgrizzle.superblocks;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,8 @@ public abstract class SuperBlock implements ConfigurationSerializable {
     }
     
     @Override
-    public @NotNull Map<String, Object> serialize() {
+    public @Nonnull
+    Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
         
         map.put("structure", structure);

@@ -10,9 +10,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 import org.mineacademy.fo.Common;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +34,8 @@ public class SuperBell extends SuperBlock {
     }
     
     @Override
-    public @NotNull Map<String, Object> serialize() {
+    public @Nonnull
+    Map<String, Object> serialize() {
         return super.serialize();
     }
     

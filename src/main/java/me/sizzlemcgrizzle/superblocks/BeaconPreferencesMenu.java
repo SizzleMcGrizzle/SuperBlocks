@@ -1,8 +1,6 @@
-package me.sizzlemcgrizzle.superblocks.beacon;
+package me.sizzlemcgrizzle.superblocks;
 
 import de.craftlancer.clclans.CLClans;
-import me.sizzlemcgrizzle.superblocks.SuperBeacon;
-import me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin;
 import me.sizzlemcgrizzle.superblocks.settings.Settings;
 import me.sizzlemcgrizzle.superblocks.util.SuperBlocksUtil;
 import org.bukkit.Bukkit;

@@ -1,12 +1,16 @@
 package me.sizzlemcgrizzle.superblocks;
 
 
-import me.sizzlemcgrizzle.superblocks.beacon.BeaconEffect;
+import de.craftlancer.clclans.CLClans;
+import de.craftlancer.core.LambdaRunnable;
 import me.sizzlemcgrizzle.superblocks.commands.SuperBlocksCommandGroup;
 import me.sizzlemcgrizzle.superblocks.settings.Settings;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.mineacademy.fo.Common;
 import org.mineacademy.fo.FileUtil;
@@ -18,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class SuperBlocksPlugin extends SimplePlugin {
@@ -105,7 +110,26 @@ public class SuperBlocksPlugin extends SimplePlugin {
     }
     
     private void activateBeaconTimer() {
-        new BeaconEffect(this).runTaskTimer(this, 0, 160);
+        new LambdaRunnable(() -> getSuperBlocks().stream().filter(block -> block instanceof SuperBeacon).filter(block -> ((SuperBeacon) block).isActive()).forEach(block -> {
+            SuperBeacon beacon = (SuperBeacon) block;
+            Location location = beacon.getStructure().get(0);
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.getLocation().getWorld() != location.getWorld() || getHorizontalDistanceSquared(player.getLocation(), location) >= beacon.getRange())
+                    continue;
+                
+                if (isClanMember(beacon.getOwner(), player.getUniqueId())) {
+                    if (beacon.getBuff1() != null)
+                        player.addPotionEffect(beacon.getBuff1());
+                    if (beacon.getBuff2() != null)
+                        player.addPotionEffect(beacon.getBuff2());
+                }
+                if (isEnemy(beacon.getOwner(), player.getUniqueId())) {
+                    if (beacon.getDebuff() != null)
+                        player.addPotionEffect(beacon.getDebuff());
+                }
+                
+            }
+        })).runTaskTimer(this, 0, 160);
     }
     
     public List<SuperBlock> getSuperBlocks() {
@@ -123,5 +147,23 @@ public class SuperBlocksPlugin extends SimplePlugin {
     
     public static Economy getEconomy() {
         return econ;
+    }
+    
+    private boolean isClanMember(UUID uuid, UUID playerUUID) {
+        if (uuid.equals(playerUUID))
+            return true;
+        if (CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(playerUUID)) == null || CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(uuid)) == null)
+            return false;
+        return CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(uuid)).equals(CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(playerUUID)));
+    }
+    
+    private boolean isEnemy(UUID uuid, UUID playerUUID) {
+        if (CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(playerUUID)) == null || CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(uuid)) == null)
+            return false;
+        return CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(playerUUID)).hasRival(CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(uuid)));
+    }
+    
+    private double getHorizontalDistanceSquared(Location loc1, Location loc2) {
+        return Math.pow(Math.abs(loc1.getX() - loc2.getX()), 2) + Math.pow(Math.abs(loc1.getZ() - loc2.getZ()), 2);
     }
 }
