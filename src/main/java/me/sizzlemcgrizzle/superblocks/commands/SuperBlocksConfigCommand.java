@@ -30,7 +30,7 @@ public class SuperBlocksConfigCommand extends SimpleSubCommand {
         if (args.length == 1)
             return completeLastWord(Arrays.asList("setPrefix", "setCurrency", "addPassthroughBlock", "removePassthroughBlock"));
         if (args.length == 2 && args[0].equalsIgnoreCase("removePassthroughBlock"))
-            return completeLastWord(Settings.PASSTHROUGH_BLOCKS_MATERIAL.getSource().stream().map(Enum::name).collect(Collectors.toList()));
+            return completeLastWord(Settings.PASSTHROUGH_BLOCKS_MATERIAL.stream().map(Enum::name).collect(Collectors.toList()));
         return new ArrayList<>();
     }
     
@@ -70,7 +70,7 @@ public class SuperBlocksConfigCommand extends SimpleSubCommand {
             
             
         } else if (args[0].equalsIgnoreCase("addPassthroughBlock")) {
-            List<String> serList = Settings.PASSTHROUGH_BLOCKS_MATERIAL.getSource().stream().map(Enum::name).collect(Collectors.toList());
+            List<String> serList = Settings.PASSTHROUGH_BLOCKS_MATERIAL.stream().map(Enum::name).collect(Collectors.toList());
             if (CompMaterial.isAir(item.getType())) {
                 tell(Settings.PREFIX + "&cYou must hold an item!");
                 return;
@@ -83,7 +83,7 @@ public class SuperBlocksConfigCommand extends SimpleSubCommand {
             config.set("Beacon_Passthrough_Blocks", serList);
             tell(Settings.PREFIX + "&7You have added type &6" + item.getType() + " &7to the beacon passthrough blocks list. &2/superblocks reload&7 to apply changes.");
         } else if (args[0].equalsIgnoreCase("removePassthroughBlock")) {
-            List<String> serList = Settings.PASSTHROUGH_BLOCKS_MATERIAL.getSource().stream().map(Enum::name).collect(Collectors.toList());
+            List<String> serList = Settings.PASSTHROUGH_BLOCKS_MATERIAL.stream().map(Enum::name).collect(Collectors.toList());
             if (args.length < 2) {
                 tell(Settings.PREFIX + "&cYou must enter a material!");
                 return;
