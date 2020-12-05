@@ -179,3 +179,5 @@ build.xml
 .build.xml
  
 # End of https://www.gitignore.io/api/osx,java,eclipse,intellij,maven
+README.md
+module_superblocks.xml
