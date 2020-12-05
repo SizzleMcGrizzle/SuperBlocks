@@ -166,5 +166,16 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+.target
+/target
+target
+.idea
+/.idea
+..idea
+.gitattributes
+..gitattributes
+build.xml
+.build.xml
  
 # End of https://www.gitignore.io/api/osx,java,eclipse,intellij,maven
