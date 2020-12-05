@@ -77,6 +77,9 @@ public class SuperBeacon extends SuperBlock {
      *   Does it have a 3x3 of iron/diamond/emerald/gold blocks under it?
      */
     public boolean isActive() {
+        if (isTimeExpired())
+            return false;
+        
         Optional<Location> optional = getStructure().stream().findFirst();
         
         if (!optional.isPresent())
@@ -223,6 +226,10 @@ public class SuperBeacon extends SuperBlock {
     
     public void setDebuff(PotionEffect debuff) {
         this.debuff = debuff;
+    }
+    
+    public boolean isTimeExpired() {
+        return expireTime < System.currentTimeMillis();
     }
     
     public long getExpireTime() {

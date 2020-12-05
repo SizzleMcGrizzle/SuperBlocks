@@ -160,7 +160,7 @@ public class SuperBlocksPlugin extends SimplePlugin {
     private boolean isEnemy(UUID uuid, UUID playerUUID) {
         if (CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(playerUUID)) == null || CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(uuid)) == null)
             return false;
-        return CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(playerUUID)).hasRival(CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(uuid)));
+        return CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(uuid)).hasRival(CLClans.getInstance().getClan(Bukkit.getOfflinePlayer(playerUUID)));
     }
     
     private double getHorizontalDistanceSquared(Location loc1, Location loc2) {
