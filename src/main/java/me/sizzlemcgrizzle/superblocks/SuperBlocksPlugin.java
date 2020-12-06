@@ -110,7 +110,7 @@ public class SuperBlocksPlugin extends SimplePlugin {
     }
     
     private void activateBeaconTimer() {
-        new LambdaRunnable(() -> getSuperBlocks().stream().filter(block -> block instanceof SuperBeacon).filter(block -> ((SuperBeacon) block).isActive()).forEach(block -> {
+        new LambdaRunnable(() -> getSuperBlocks().stream().filter(block -> block instanceof SuperBeacon).filter(block -> ((SuperBeacon) block).isActive() && !((SuperBeacon) block).isTimeExpired()).forEach(block -> {
             SuperBeacon beacon = (SuperBeacon) block;
             Location location = beacon.getStructure().get(0);
             for (Player player : Bukkit.getOnlinePlayers()) {

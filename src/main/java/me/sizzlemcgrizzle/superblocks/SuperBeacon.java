@@ -77,8 +77,6 @@ public class SuperBeacon extends SuperBlock {
      *   Does it have a 3x3 of iron/diamond/emerald/gold blocks under it?
      */
     public boolean isActive() {
-        if (isTimeExpired())
-            return false;
         
         Optional<Location> optional = getStructure().stream().findFirst();
         
