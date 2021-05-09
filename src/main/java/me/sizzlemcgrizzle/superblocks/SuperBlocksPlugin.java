@@ -2,6 +2,7 @@ package me.sizzlemcgrizzle.superblocks;
 
 
 import de.craftlancer.clclans.CLClans;
+import de.craftlancer.core.LambdaRunnable;
 import me.sizzlemcgrizzle.superblocks.commands.SuperBlocksCommandHandler;
 import me.sizzlemcgrizzle.superblocks.settings.Settings;
 import net.milkbowl.vault.economy.Economy;
@@ -10,12 +11,14 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class SuperBlocksPlugin extends JavaPlugin {
@@ -65,16 +68,23 @@ public class SuperBlocksPlugin extends JavaPlugin {
         if (!superBlocksFile.exists())
             saveResource(superBlocksFile.getName(), false);
         
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(superBlocksFile);
+        YamlConfiguration config = new YamlConfiguration();
         
         config.set("beacons", superBlocks.stream().filter(block -> block instanceof SuperBeacon).collect(Collectors.toList()));
         config.set("bells", superBlocks.stream().filter(block -> block instanceof SuperBell).collect(Collectors.toList()));
         
-        try {
-            config.save(superBlocksFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BukkitRunnable saveTask = new LambdaRunnable(() -> {
+            try {
+                config.save(superBlocksFile);
+            } catch (IOException e) {
+                getLogger().log(Level.SEVERE, String.format("Error while saving %s: ", "SuperBlocks"), e);
+            }
+        });
+        
+        if (isEnabled())
+            saveTask.runTaskAsynchronously(this);
+        else
+            saveTask.run();
     }
     
     public List<SuperBlock> getSuperBlocks() {
