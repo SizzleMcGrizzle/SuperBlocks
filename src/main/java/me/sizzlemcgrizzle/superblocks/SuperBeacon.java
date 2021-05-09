@@ -74,6 +74,9 @@ public class SuperBeacon extends SuperBlock {
     }
     
     private void run() {
+        if (!isActive())
+            return;
+        
         Location location = getStructure().get(0);
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getLocation().getWorld() != location.getWorld() || SuperBlocksPlugin.instance.getHorizontalDistanceSquared(player.getLocation(), location) >= getRange())
