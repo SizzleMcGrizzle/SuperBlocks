@@ -1,17 +1,23 @@
 package me.sizzlemcgrizzle.superblocks;
 
+import de.craftlancer.core.LambdaRunnable;
+import de.craftlancer.core.resourcepack.ResourcePackManager;
+import de.craftlancer.core.util.MessageLevel;
+import de.craftlancer.core.util.MessageUtil;
 import me.sizzlemcgrizzle.superblocks.settings.Settings;
 import me.sizzlemcgrizzle.superblocks.util.SuperBlocksUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
-import org.mineacademy.fo.Common;
+import org.bukkit.potion.PotionEffectType;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -26,7 +32,7 @@ public class SuperBeacon extends SuperBlock {
     private PotionEffect buff1;
     private PotionEffect buff2;
     private PotionEffect debuff;
-    private long expireTime;
+    private SuperBeaconMenu menu;
     
     public SuperBeacon(List<Location> structure, UUID owner) {
         super(structure, owner);
@@ -34,16 +40,25 @@ public class SuperBeacon extends SuperBlock {
         this.buff1 = null;
         this.buff2 = null;
         this.debuff = null;
-        this.expireTime = 0;
+        
+        new LambdaRunnable(this::run).runTaskTimer(SuperBlocksPlugin.instance, 20, 160);
     }
     
     public SuperBeacon(Map<String, Object> map) {
         super(map);
         
-        buff1 = SuperBlocksUtil.getPotionFromString((String) map.get("buff1"));
-        buff2 = SuperBlocksUtil.getPotionFromString((String) map.get("buff2"));
-        debuff = SuperBlocksUtil.getPotionFromString((String) map.get("debuff"));
-        expireTime = Long.parseLong((String) map.get("expire"));
+        try {
+            buff1 = (PotionEffect) map.get("buff1");
+            buff2 = (PotionEffect) map.get("buff2");
+            debuff = (PotionEffect) map.get("debuff");
+        } catch (Exception e) {
+            //Legacy
+            buff1 = SuperBlocksUtil.getPotionFromString((String) map.get("buff1"));
+            buff2 = SuperBlocksUtil.getPotionFromString((String) map.get("buff2"));
+            debuff = SuperBlocksUtil.getPotionFromString((String) map.get("debuff"));
+        }
+        
+        new LambdaRunnable(this::run).runTaskTimer(SuperBlocksPlugin.instance, 20, 160);
     }
     
     @Override
@@ -51,24 +66,49 @@ public class SuperBeacon extends SuperBlock {
     Map<String, Object> serialize() {
         Map<String, Object> map = super.serialize();
         
-        map.put("buff1", SuperBlocksUtil.getStringFromPotion(buff1));
-        map.put("buff2", SuperBlocksUtil.getStringFromPotion(buff2));
-        map.put("debuff", SuperBlocksUtil.getStringFromPotion(debuff));
-        map.put("expire", String.valueOf(expireTime));
+        map.put("buff1", buff1);
+        map.put("buff2", buff2);
+        map.put("debuff", debuff);
         
         return map;
     }
     
-    @Override
-    public void doFunction(Player player, Location location) {
-        if (isActive())
-            new BeaconPreferencesMenu(this).displayTo(player);
-        else {
-            Common.tell(player, Settings.PREFIX + "&cYou must activate this beacon! &e&o(There must be a beam and a 3x3 grid of blocks under like a normal beacon)");
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 0.5F);
-            Runnable runnable = player::closeInventory;
-            Common.runLater(1, runnable);
+    private void run() {
+        Location location = getStructure().get(0);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getLocation().getWorld() != location.getWorld() || SuperBlocksPlugin.instance.getHorizontalDistanceSquared(player.getLocation(), location) >= getRange())
+                continue;
+            
+            if (SuperBlocksPlugin.instance.isClanMember(getOwner(), player.getUniqueId())) {
+                if (getBuff1() != null)
+                    player.addPotionEffect(getBuff1());
+                if (getBuff2() != null)
+                    player.addPotionEffect(getBuff2());
+            }
+            if (SuperBlocksPlugin.instance.isEnemy(getOwner(), player.getUniqueId())) {
+                if (getDebuff() != null)
+                    player.addPotionEffect(getDebuff());
+            }
+            
         }
+    }
+    
+    @Override
+    public void doFunction(Player player, Location location, PlayerInteractEvent event) {
+        event.setCancelled(true);
+        if (isActive())
+            display(player);
+        else {
+            MessageUtil.sendMessage(SuperBlocksPlugin.instance, player, MessageLevel.INFO, "You must activate this beacon!");
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 0.5F);
+        }
+    }
+    
+    private void display(Player player) {
+        if (menu == null)
+            menu = new SuperBeaconMenu(this);
+        
+        player.openInventory(menu.getMenu(ResourcePackManager.getInstance().isFullyAccepted(player) ? "resource" : "default").getInventory());
     }
     
     /*
@@ -214,28 +254,16 @@ public class SuperBeacon extends SuperBlock {
         return debuff;
     }
     
-    public void setBuff1(PotionEffect buff1) {
-        this.buff1 = buff1;
+    public void setBuff1(PotionEffectType buff) {
+        this.buff1 = buff == null ? null : SuperBlocksUtil.getPotionFromType(buff);
     }
     
-    public void setBuff2(PotionEffect buff2) {
-        this.buff2 = buff2;
+    public void setBuff2(PotionEffectType buff) {
+        this.buff2 = buff == null ? null : SuperBlocksUtil.getPotionFromType(buff);
     }
     
-    public void setDebuff(PotionEffect debuff) {
-        this.debuff = debuff;
-    }
-    
-    public boolean isTimeExpired() {
-        return expireTime < System.currentTimeMillis();
-    }
-    
-    public long getExpireTime() {
-        return expireTime;
-    }
-    
-    public void setExpireTime(long expireTime) {
-        this.expireTime = expireTime;
+    public void setDebuff(PotionEffectType buff) {
+        this.debuff = buff == null ? null : SuperBlocksUtil.getPotionFromType(buff);
     }
     
     public static ItemStack getItem() {

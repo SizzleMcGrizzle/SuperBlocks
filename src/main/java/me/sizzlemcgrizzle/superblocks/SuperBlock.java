@@ -3,6 +3,7 @@ package me.sizzlemcgrizzle.superblocks;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public abstract class SuperBlock implements ConfigurationSerializable {
         return structure;
     }
     
-    public abstract void doFunction(Player player, Location location);
+    public abstract void doFunction(Player player, Location location, PlayerInteractEvent event);
     
     
 }

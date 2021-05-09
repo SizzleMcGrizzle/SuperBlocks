@@ -1,16 +1,18 @@
 package me.sizzlemcgrizzle.superblocks;
 
 import de.craftlancer.clclans.CLClans;
-import me.sizzlemcgrizzle.superblocks.settings.Settings;
+import de.craftlancer.core.LambdaRunnable;
+import de.craftlancer.core.util.MessageLevel;
+import de.craftlancer.core.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.mineacademy.fo.Common;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -40,20 +42,21 @@ public class SuperBell extends SuperBlock {
     }
     
     @Override
-    public void doFunction(Player player, Location location) {
+    public void doFunction(Player player, Location location, PlayerInteractEvent event) {
         if (cooldownMap.containsKey(player)) {
             if (cooldownMap.get(player) + 60000L >= System.currentTimeMillis()) {
-                Common.tell(player, Settings.PREFIX + "&e You must wait &c" + (cooldownMap.get(player) + 60000L - System.currentTimeMillis()) / 1000L + " seconds&e to use this again.");
+                MessageUtil.sendMessage(SuperBlocksPlugin.instance, player, MessageLevel.INFO, "You must wait §c" + (cooldownMap.get(player) + 60000L - System.currentTimeMillis()) / 1000L + " seconds§e to use this again.");
                 return;
             }
             
             this.cooldownMap.remove(player);
         }
         
+        event.setCancelled(true);
         player.playSound(location, Sound.BLOCK_BELL_RESONATE, 1.0F, 1.0F);
-        Common.tell(player, "&aScanning...");
+        player.sendMessage("§aScanning...");
         cooldownMap.put(player, System.currentTimeMillis());
-        Runnable runnable = () -> {
+        new LambdaRunnable(() -> {
             int clan = 0;
             int neutral = 0;
             int rival = 0;
@@ -75,13 +78,12 @@ public class SuperBell extends SuperBlock {
             }
             
             if (clan == 0 && neutral == 0 && rival == 0) {
-                Common.tell(player, "&aThere are no players nearby.");
+                MessageUtil.sendMessage(SuperBlocksPlugin.instance, player, MessageLevel.INFO, "There are no players nearby.");
             } else {
-                Common.tell(player, "&f[&4Craft&fCitizen] &eThere are &2" + clan + " clan members&e, &4" + rival + " rivals&e, and &f" + neutral + " players &enearby.");
+                MessageUtil.sendMessage(SuperBlocksPlugin.instance, player, MessageLevel.INFO, "§eThere are §" + clan + " clan members§e, §4" + rival + " rivals§e, and §f" + neutral + " players §enearby.");
             }
             
-        };
-        Common.runLater(60, runnable);
+        }).runTaskLater(SuperBlocksPlugin.instance, 60);
         
     }
     

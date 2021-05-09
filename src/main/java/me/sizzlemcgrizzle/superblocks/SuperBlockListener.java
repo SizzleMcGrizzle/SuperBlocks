@@ -1,10 +1,12 @@
 package me.sizzlemcgrizzle.superblocks;
 
-import me.sizzlemcgrizzle.superblocks.settings.Settings;
+import de.craftlancer.core.util.MessageLevel;
+import de.craftlancer.core.util.MessageUtil;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.events.CraftDetectEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,11 +17,8 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.remain.CompSound;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,7 +40,7 @@ public class SuperBlockListener implements Listener {
             plugin.addSuperBlock(new SuperBeacon(Collections.singletonList(location), player.getUniqueId()));
         if (item.isSimilar(SuperBell.getItem())) {
             if (plugin.getSuperBlocks().stream().anyMatch(block -> block.getStructure().contains(event.getBlockAgainst().getLocation()))) {
-                Common.tell(player, Settings.PREFIX + "&cYou cannot place this here!");
+                MessageUtil.sendMessage(plugin, player, MessageLevel.WARNING, "You cannot place this here!");
                 event.setCancelled(true);
                 return;
             }
@@ -89,7 +88,7 @@ public class SuperBlockListener implements Listener {
         if (superBlock instanceof SuperBell && location.getBlock().getType() != Material.BELL)
             return;
         
-        superBlock.doFunction(player, location);
+        superBlock.doFunction(player, location, event);
     }
     
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
@@ -109,20 +108,6 @@ public class SuperBlockListener implements Listener {
             event.setCancelled(true);
     }
     
-    @EventHandler(ignoreCancelled = true)
-    public void onBlockShoot(ProjectileHitEvent event) {
-        
-        if (event.getHitBlock() == null || !(event.getEntity().getShooter() instanceof Player))
-            return;
-        
-        Player player = (Player) event.getEntity().getShooter();
-        Location hitLocation = event.getHitBlock().getLocation();
-        
-        if (hitLocation.getBlock().getType() == Material.BELL
-                && plugin.getSuperBlocks().stream().anyMatch(block -> block.getStructure().contains(hitLocation)))
-            plugin.getSuperBlocks().stream().filter(block -> block.getStructure().contains(hitLocation)).findFirst().get().doFunction(player, hitLocation);
-    }
-    
     @EventHandler
     public void onShipPilot(CraftDetectEvent event) {
         Craft craft = event.getCraft();
@@ -135,8 +120,8 @@ public class SuperBlockListener implements Listener {
                 .anyMatch(location -> craft.getHitBox().contains((int) location.getX(), (int) location.getY(), (int) location.getZ()))))
             return;
         
-        Common.tell(pilot, Settings.PREFIX + "&cCannot pilot ship: there is an amplified beacon or a player radar on ship!");
-        CompSound.ANVIL_LAND.play(pilot.getLocation(), 0.5F, 1F);
+        MessageUtil.sendMessage(plugin, pilot, MessageLevel.WARNING, "Cannot pilot ship: there is an amplified beacon or a player radar on ship!");
+        pilot.playSound(pilot.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.25F, 1F);
         event.setCancelled(true);
     }
     

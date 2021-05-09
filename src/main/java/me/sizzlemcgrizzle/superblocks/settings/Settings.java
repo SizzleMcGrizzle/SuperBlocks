@@ -1,31 +1,37 @@
 package me.sizzlemcgrizzle.superblocks.settings;
 
+import de.craftlancer.core.util.MessageUtil;
+import me.sizzlemcgrizzle.superblocks.SuperBlocksPlugin;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.remain.CompMaterial;
-import org.mineacademy.fo.settings.SimpleSettings;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Settings extends SimpleSettings {
-    
-    @Override
-    protected int getConfigVersion() {
-        return 1;
-    }
+public class Settings {
     
     public static String PREFIX;
-    public static Boolean USE_ECONOMY;
-    public static Double CURRENCY_MONEY;
-    public static ItemStack CURRENCY_ITEM;
     public static List<Material> PASSTHROUGH_BLOCKS_MATERIAL;
     
-    private static void init() {
-        PREFIX = getString("Prefix");
-        USE_ECONOMY = getBoolean("Use_Economy");
-        CURRENCY_MONEY = getDouble("Currency_Money");
-        CURRENCY_ITEM = getConfig().getItemStack("Currency_Item");
-        PASSTHROUGH_BLOCKS_MATERIAL = getMaterialList("Beacon_Passthrough_Blocks").getSource().stream().map(CompMaterial::getMaterial).collect(Collectors.toList());
+    private static void init(ConfigurationSection config) {
+        PREFIX = ChatColor.translateAlternateColorCodes('&', config.getString("Prefix", "[SuperBlocks]"));
+        PASSTHROUGH_BLOCKS_MATERIAL = config.getStringList("Beacon_Passthrough_Blocks").stream().map(Material::valueOf).collect(Collectors.toList());
+    }
+    
+    public static void load(SuperBlocksPlugin plugin) {
+        File file = new File(plugin.getDataFolder(), "settings.yml");
+        
+        if (!file.exists())
+            plugin.saveResource("settings.yml", false);
+        
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        
+        init(config);
+        
+        MessageUtil.register(plugin, new TextComponent(PREFIX));
     }
 }
